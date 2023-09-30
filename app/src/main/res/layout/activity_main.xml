@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/login"
+    android:gravity="center"
+    tools:ignore="HardcodedText">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="100dp"
+        android:id="@+id/login_title_layout">
+
+        <TextView
+            android:id="@+id/title_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-16dp"
+            android:fontFamily="@font/naturebeauty"
+            android:text="Welcome back!"
+            android:textSize="42sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign in to get your drink"
+            android:layout_below="@id/title_login"
+            android:textSize="26sp"
+            android:fontFamily="cursive"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/login_title_layout"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/person_outline"
+            android:drawablePadding="15dp"
+            android:hint="Email/Số điện thoại/Tên đăng nhập"
+            android:inputType="textAutoComplete"
+            android:maxLength="20"
+            android:maxLines="1"
+            android:textSize="15sp"
+            android:textColorHint="#DCDCDC"
+            android:backgroundTint="#DCDCDC"
+            android:autofillHints="phone"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:inputType="textPassword"
+            android:maxLength="18"
+            android:maxLines="1"
+            android:hint="Mật khẩu"
+            android:drawableStart="@drawable/lock_outline"
+            android:drawablePadding="15dp"
+            android:layout_marginTop="10dp"
+            android:textColorHint="#DCDCDC"
+            android:backgroundTint="#DCDCDC"
+            android:autofillHints="password" />
+
+        <TextView
+            android:id="@+id/forget_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quên mật khẩu?"
+            android:textAlignment="textEnd"
+            android:textSize="16sp"
+            android:textColor="@color/color"
+            android:layout_marginTop="5dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:cornerRadius="6dp"
+            android:layout_marginTop="35dp"
+            android:text="ĐĂNG NHẬP"
+            android:textSize="20sp"
+            android:backgroundTint="#DCDCDC"
+            android:textColor="#BCBCBC"
+            android:clickable="false"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HOẶC"
+            android:textSize="16sp"
+            android:textColor="#989898"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:src="@drawable/google"
+                android:importantForAccessibility="no"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <ImageView
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@drawable/facebook_icon"
+                android:layout_marginStart="25dp"
+                android:importantForAccessibility="no"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal"
+            android:layout_marginBottom="70dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bạn chưa có tài khoản?"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/sign_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đăng ký"
+                android:textColor="@color/color"
+                android:textSize="16sp"
+                android:layout_marginStart="5dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
