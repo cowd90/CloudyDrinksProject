@@ -40,37 +40,43 @@
             android:importantForAccessibility="no"/>
 
         <EditText
+            android:id="@+id/et_mobile_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/phone_outline"
             android:drawablePadding="15dp"
+            android:padding="10dp"
             android:hint="Số điện thoại"
             android:inputType="phone"
             android:maxLength="15"
             android:maxLines="1"
             android:textSize="15sp"
-            android:textColorHint="#DCDCDC"
-            android:backgroundTint="#DCDCDC"
+            android:textColorHint="#9C9B9B"
             android:autofillHints="phone"
-            android:layout_marginTop="35dp"/>
+            android:layout_marginTop="35dp"
+            android:background="@drawable/edit_text_rounded_corner"
+            android:elevation="10dp"
+            android:layout_margin="10dp"
+            />
 
         <CheckBox
+            android:id="@+id/cb_policy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Bằng việc đăng ký, bạn đồng ý với Điều khoản Dịch vụ &amp; Chính sách bảo mật của chúng tôi"
             android:textSize="12sp"
             android:gravity="center"/>
 
-        <com.google.android.material.button.MaterialButton
+        <Button
+            android:id="@+id/btn_next_verify_phone_number"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="Tiếp theo"
             android:textSize="20sp"
-            app:cornerRadius="6dp"
-            android:backgroundTint="#DCDCDC"
-            android:textColor="#BCBCBC"
             android:layout_marginTop="10dp"
-            android:clickable="false"/>
+            android:enabled="false"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
 
         <TextView
             android:layout_width="match_parent"
