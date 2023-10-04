@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView tv_signUp;
+    private TextView tv_signUp, tv_forgetpwd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,12 +17,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         tv_signUp = findViewById(R.id.sign_up);
+        tv_forgetpwd = findViewById(R.id.forget_pwd);
 
         tv_signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        tv_forgetpwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ForgetPasswordActivity.class));
             }
         });
     }

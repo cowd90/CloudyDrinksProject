@@ -25,14 +25,36 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_below="@+id/verification_toolbar">
+        android:layout_below="@+id/verification_toolbar"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
 
-        <TextView
-            android:id="@+id/tv_notification"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:gravity="center"
-            android:textSize="16sp"/>
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:id="@+id/tv_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="12sp"
+                android:maxLines="1"/>
+
+            <TextView
+                android:id="@+id/tv_phoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -58,7 +80,7 @@
                 android:layout_height="60dp"
                 android:layout_marginStart="4dp"
                 android:gravity="center"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="1"
@@ -123,7 +145,7 @@
                 android:layout_height="60dp"
                 android:layout_marginStart="4dp"
                 android:gravity="center"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
                 android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="1"
@@ -132,12 +154,38 @@
 
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nextStep"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:enabled="false"
+            android:paddingLeft="3dp"
+            android:paddingTop="8dp"
+            android:paddingRight="3dp"
+            android:paddingBottom="8dp"
+            android:text="Tiếp theo"
+            android:textColor="#BCBCBC"
+            android:backgroundTint="#DCDCDC"
+            android:textSize="20sp"
+            app:cornerRadius="6dp"/>
+
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="#3F51B5"
+            android:layout_gravity="center"
+            android:id="@+id/signup_verification_progress_bar"
+            android:layout_marginTop="-50dp"
+            android:visibility="gone"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="40dp">
 
             <TextView
                 android:layout_width="wrap_content"

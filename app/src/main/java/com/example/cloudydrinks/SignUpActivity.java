@@ -1,29 +1,37 @@
 package com.example.cloudydrinks;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.button.MaterialButton;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthMissingActivityForRecaptchaException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -32,8 +40,6 @@ public class SignUpActivity extends AppCompatActivity {
     private Button btn_nextStep;
     private EditText mobileInput;
     private CheckBox policyInput;
-    String phoneNumber;
-    boolean isTick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +62,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-
         tv_signIn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -66,23 +71,54 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        // Check if phone number input, terms of service and policies is filled
-
+        // Check if phone number input is filled and policy input is checked
+        mobileInput.addTextChangedListener(textWatcher);
+        policyInput.setOnCheckedChangeListener(onCheckedChangeListener);
         btn_nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(SignUpActivity.this, SignUpVerificationActivity.class);
-                i.putExtra("mobile", mobileInput.getText().toString());
+                Intent i = new Intent(getApplicationContext(), SignUpVerificationActivity.class);
+                i.putExtra("input", mobileInput.getText().toString().trim());
                 startActivity(i);
             }
         });
+
     }
-   private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-       @Override
-       public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-           if (isChecked) {
-               
-           }
-       }
-   };
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if(!mobileInput.getText().toString().trim().isEmpty()) {
+                policyInput.setEnabled(true);
+            } else {
+                policyInput.setEnabled(false);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (policyInput.isChecked()) {
+                btn_nextStep.setEnabled(true);
+                btn_nextStep.setClickable(true);
+                btn_nextStep.setBackgroundColor(Color.parseColor("#FB6E64"));
+                btn_nextStep.setTextColor(Color.WHITE);
+            } else {
+                btn_nextStep.setTextColor(Color.parseColor("#959595"));
+                btn_nextStep.setBackgroundColor(Color.parseColor("#DCDBDB"));
+                btn_nextStep.setEnabled(false);
+                btn_nextStep.setClickable(false);
+            }
+        }
+    };
+
 }

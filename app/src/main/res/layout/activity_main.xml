@@ -52,7 +52,7 @@
             android:drawablePadding="15dp"
             android:hint="Email/Số điện thoại/Tên đăng nhập"
             android:inputType="textAutoComplete"
-            android:maxLength="20"
+            android:maxLength="50"
             android:maxLines="1"
             android:textSize="15sp"
             android:textColorHint="#DCDCDC"
@@ -76,10 +76,11 @@
 
         <TextView
             android:id="@+id/forget_pwd"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Quên mật khẩu?"
-            android:textAlignment="textEnd"
+            android:layout_gravity="end"
+            android:layout_marginEnd="6dp"
             android:textSize="16sp"
             android:textColor="@color/color"
             android:layout_marginTop="5dp"/>
