@@ -35,44 +35,73 @@
 
     </RelativeLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/login_title_layout"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="60dp"
         android:layout_marginStart="35dp"
         android:layout_marginEnd="35dp"
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
         <EditText
+            android:id="@+id/phoneNumberET"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:drawableStart="@drawable/person_outline"
             android:drawablePadding="15dp"
-            android:hint="Email/Số điện thoại/Tên đăng nhập"
-            android:inputType="textAutoComplete"
+            android:hint="Số điện thoại"
+            android:inputType="phone"
             android:maxLength="50"
             android:maxLines="1"
             android:textSize="15sp"
             android:textColorHint="#DCDCDC"
             android:backgroundTint="#DCDCDC"
-            android:autofillHints="phone"/>
+            android:autofillHints="phone"
+            android:textCursorDrawable="@drawable/text_cursor"/>
 
-        <EditText
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:inputType="textPassword"
-            android:maxLength="18"
-            android:maxLines="1"
-            android:hint="Mật khẩu"
-            android:drawableStart="@drawable/lock_outline"
-            android:drawablePadding="15dp"
-            android:layout_marginTop="10dp"
-            android:textColorHint="#DCDCDC"
-            android:backgroundTint="#DCDCDC"
-            android:autofillHints="password" />
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/passwordET"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15sp"
+                android:inputType="textPassword"
+                android:maxLength="18"
+                android:maxLines="1"
+                android:hint="Mật khẩu"
+                android:drawableStart="@drawable/lock_outline"
+                android:drawablePadding="15dp"
+                android:textColorHint="#DCDCDC"
+                android:backgroundTint="#DCDCDC"
+                android:autofillHints="password"
+                android:textCursorDrawable="@drawable/text_cursor"/>
+
+            <ImageView
+                android:id="@+id/passwordIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="20dp"
+                android:padding="5dp"
+                android:src="@drawable/show_pwd" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="-60dp"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/forget_pwd"
@@ -86,6 +115,7 @@
             android:layout_marginTop="5dp"/>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/loginBtn"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:paddingLeft="3dp"
@@ -98,7 +128,8 @@
             android:textSize="20sp"
             android:backgroundTint="#DCDCDC"
             android:textColor="#BCBCBC"
-            android:clickable="false"/>
+            android:clickable="false"
+            android:enabled="false"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -111,27 +142,61 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
+            android:background="@drawable/rectangle_outline"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
-                android:layout_width="55dp"
-                android:layout_height="55dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/google"
+                android:layout_marginStart="20dp"
                 android:importantForAccessibility="no"
-                android:clickable="true"
-                android:focusable="true" />
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đăng nhập với Google"
+                android:textSize="16sp"
+                android:layout_marginStart="45dp"
+                android:layout_gravity="center"
+                android:textColor="#E6000000"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@drawable/rectangle_outline"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
-                android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/facebook_icon"
-                android:layout_marginStart="25dp"
+                android:layout_marginStart="20dp"
                 android:importantForAccessibility="no"
-                android:clickable="true"
-                android:focusable="true" />
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đăng nhập với Facebook"
+                android:textSize="16sp"
+                android:layout_marginStart="45dp"
+                android:layout_gravity="center"
+                android:textColor="#E6000000"
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -139,7 +204,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="bottom|center_horizontal"
-            android:layout_marginBottom="70dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="30dp"
             android:orientation="horizontal">
 
             <TextView

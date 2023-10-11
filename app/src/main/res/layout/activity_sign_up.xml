@@ -28,27 +28,41 @@
         android:layout_height="match_parent"
         android:layout_below="@id/sign_up_toolbar"
         android:orientation="vertical"
+        android:layout_marginTop="-70dp"
         android:layout_marginStart="35dp"
         android:layout_marginEnd="35dp"
         android:gravity="center">
 
-        <ImageView
+        <EditText
+            android:id="@+id/usernameET"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:src="@drawable/app_logo"
-            android:layout_marginTop="50dp"
-            android:importantForAccessibility="no"/>
+            android:layout_height="55dp"
+            android:drawableStart="@drawable/person_outline"
+            android:drawablePadding="15dp"
+            android:padding="10dp"
+            android:hint="Tên hiển thị"
+            android:inputType="textAutoComplete"
+            android:maxLength="30"
+            android:maxLines="1"
+            android:textSize="15sp"
+            android:textColorHint="#9C9B9B"
+            android:autofillHints="username"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/edit_text_rounded_corner"
+            android:elevation="10dp"
+            android:layout_margin="10dp"
+            android:textCursorDrawable="@drawable/text_cursor"/>
 
         <EditText
-            android:id="@+id/et_mobile_input"
+            android:id="@+id/phoneNumberET"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:drawableStart="@drawable/phone_outline"
             android:drawablePadding="15dp"
             android:padding="10dp"
             android:hint="Số điện thoại"
             android:inputType="phone"
-            android:maxLength="15"
+            android:maxLength="320"
             android:maxLines="1"
             android:textSize="15sp"
             android:textColorHint="#9C9B9B"
@@ -57,7 +71,87 @@
             android:background="@drawable/edit_text_rounded_corner"
             android:elevation="10dp"
             android:layout_margin="10dp"
-            />
+            android:textCursorDrawable="@drawable/text_cursor"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:gravity="center"
+            android:background="@drawable/edit_text_rounded_corner"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:elevation="10dp">
+
+            <EditText
+                android:id="@+id/passwordET"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:autofillHints="password"
+                android:drawableStart="@drawable/lock_outline"
+                android:drawablePadding="15dp"
+                android:hint="Mật khẩu"
+                android:inputType="textPassword"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:textColorHint="#9C9B9B"
+                android:textSize="15sp"
+                android:padding="10dp"
+                android:textCursorDrawable="@drawable/text_cursor"/>
+
+            <ImageView
+                android:id="@+id/passwordIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:src="@drawable/show_pwd"
+                android:layout_marginEnd="10dp"
+                android:padding="5dp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:gravity="center"
+            android:background="@drawable/edit_text_rounded_corner"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:elevation="10dp">
+
+            <EditText
+                android:id="@+id/conPasswordET"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:autofillHints="password"
+                android:drawableStart="@drawable/lock_outline"
+                android:drawablePadding="15dp"
+                android:hint="Nhập lại mật khẩu"
+                android:inputType="textPassword"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:textColorHint="#9C9B9B"
+                android:textSize="15sp"
+                android:padding="10dp"
+                android:textCursorDrawable="@drawable/text_cursor"/>
+
+            <ImageView
+                android:id="@+id/conPasswordIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:src="@drawable/show_pwd"
+                android:layout_marginEnd="10dp"
+                android:padding="5dp"/>
+
+        </RelativeLayout>
 
         <CheckBox
             android:id="@+id/cb_policy"
@@ -66,7 +160,15 @@
             android:text="Bằng việc đăng ký, bạn đồng ý với Điều khoản Dịch vụ &amp; Chính sách bảo mật của chúng tôi"
             android:textSize="12sp"
             android:gravity="center"
+            android:layout_marginTop="10dp"
             android:enabled="false"/>
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="-60dp"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_next_verify_phone_number"
@@ -75,7 +177,7 @@
             app:cornerRadius="6dp"
             android:text="Tiếp theo"
             android:textSize="20sp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:enabled="false"
             android:backgroundTint="#DCDCDC"
             android:textColor="#BCBCBC"
@@ -91,46 +193,12 @@
             android:layout_marginTop="-60dp"
             android:visibility="gone"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="HOẶC"
-            android:textSize="16sp"
-            android:textColor="#989898"
-            android:layout_marginTop="30dp"
-            android:gravity="center_horizontal"/>
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="20dp">
-
-            <ImageView
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:src="@drawable/google"
-                android:importantForAccessibility="no"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <ImageView
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:src="@drawable/facebook_icon"
-                android:layout_marginStart="25dp"
-                android:importantForAccessibility="no"
-                android:clickable="true"
-                android:focusable="true" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:gravity="bottom|center_horizontal"
-            android:layout_marginBottom="70dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="0dp"
             android:orientation="horizontal">
 
             <TextView

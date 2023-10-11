@@ -79,7 +79,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
         notification = findViewById(R.id.tv_notification);
         phoneNumber = findViewById(R.id.tv_phoneNumber);
         String msg = "Mã xác thực (OTP) đã được gửi qua Tin nhắn của ";
-        String inputPhoneNumber = getIntent().getStringExtra("input");
+        String inputPhoneNumber = getIntent().getStringExtra("phoneNumberInput");
 
         // Make bold text
         SpannableString ss = new SpannableString(msg);
@@ -95,6 +95,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setInProgress(true);
                 otp = inputCode1.getText().toString() + inputCode2.getText().toString() + inputCode3.getText().toString() + inputCode4.getText().toString() + inputCode5.getText().toString() + inputCode6.getText().toString();
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationID, otp);
                 signInWithPhoneAuthCredential(credential);
@@ -104,10 +105,9 @@ public class SignUpVerificationActivity extends AppCompatActivity {
     }
 
     private void sendOtp(String phoneNumber) {
-        setInProgress(true);
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(mAuth)
-                        .setPhoneNumber(phoneNumber)       // Phone number to verify
+                        .setPhoneNumber("+84"+phoneNumber)       // Phone number to verify
                         .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
                         .setActivity(this)                 // (optional) Activity for callback binding
                         // If no activity is passed, reCAPTCHA verification can not be used.
@@ -120,6 +120,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
 
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
+            setInProgress(false);
             signInWithPhoneAuthCredential(credential);
         }
 
@@ -141,7 +142,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            startActivity(new Intent(SignUpVerificationActivity.this, HomeActivity.class));
+                            startActivity(new Intent(getApplicationContext(), SignUpPasswordActivity.class));
                             finish();
                         } else {
                             Toast.makeText(SignUpVerificationActivity.this, "Mã xác thực không đúng. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
@@ -284,7 +285,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser curreUser = FirebaseAuth.getInstance().getCurrentUser();
         if (curreUser != null) {
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+            startActivity(new Intent(getApplicationContext(), SignUpPasswordActivity.class));
             finish();
         }
     }
