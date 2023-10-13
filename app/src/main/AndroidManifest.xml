@@ -19,13 +19,13 @@
             android:name=".HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUpPasswordActivity"
+            android:name=".SetNewPassword"
             android:exported="false" />
         <activity
             android:name=".ForgetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUpVerificationActivity"
+            android:name=".VerifyOTP"
             android:exported="false"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity

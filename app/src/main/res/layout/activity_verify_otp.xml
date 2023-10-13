@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpVerificationActivity"
+    tools:context=".VerifyOTP"
     tools:ignore="HardcodedText">
 
     <androidx.appcompat.widget.Toolbar
@@ -98,7 +98,8 @@
                 android:inputType="number"
                 android:maxLength="1"
                 android:textSize="24sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:enabled="false"/>
 
             <EditText
                 android:id="@+id/inputCode3"
@@ -111,7 +112,8 @@
                 android:inputType="number"
                 android:maxLength="1"
                 android:textSize="24sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:enabled="false"/>
 
             <EditText
                 android:id="@+id/inputCode4"
@@ -124,7 +126,8 @@
                 android:inputType="number"
                 android:maxLength="1"
                 android:textSize="24sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:enabled="false"/>
 
             <EditText
                 android:id="@+id/inputCode5"
@@ -137,7 +140,8 @@
                 android:inputType="number"
                 android:maxLength="1"
                 android:textSize="24sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:enabled="false"/>
 
             <EditText
                 android:id="@+id/inputCode6"
@@ -150,7 +154,8 @@
                 android:inputType="number"
                 android:maxLength="1"
                 android:textSize="24sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:enabled="false"/>
 
         </LinearLayout>
 
@@ -159,7 +164,6 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
-            android:clickable="true"
             android:enabled="false"
             android:paddingLeft="3dp"
             android:paddingTop="8dp"

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "802776580416",
+    "firebase_url": "https://cloudy-drinks-default-rtdb.firebaseio.com",
+    "project_id": "cloudy-drinks",
+    "storage_bucket": "cloudy-drinks.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802776580416:android:ed232af28b52c499b3baa5",
+        "android_client_info": {
+          "package_name": "com.example.cloudydrinks"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5gJK3CyZRTAuhk4zU4IHdP9P7FMGiPHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

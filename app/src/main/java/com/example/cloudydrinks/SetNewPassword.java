@@ -11,17 +11,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class SignUpPasswordActivity extends AppCompatActivity {
+public class SetNewPassword extends AppCompatActivity {
     private EditText passwordInput;
     private Button confirmPasswordBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up_password);
+        setContentView(R.layout.activity_set_new_password);
 
-        passwordInput = findViewById(R.id.password);
-        confirmPasswordBtn = findViewById(R.id.confirm_password_btn);
+        passwordInput = findViewById(R.id.passwordET);
+        confirmPasswordBtn = findViewById(R.id.conPasswordET);
         confirmPasswordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

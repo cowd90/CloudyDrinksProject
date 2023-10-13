@@ -210,14 +210,14 @@ public class SignUpActivity extends AppCompatActivity {
                 if (snapshot.hasChild(phoneNumber)) {
                     phoneNumberET.setError("Số điện thoại đã được đăng ký");
                     phoneNumberET.requestFocus();
-                    return;
                 } else {
-                    User user = new User(username, phoneNumber, password);
-                    reference.child(phoneNumber).setValue(user);
-
-                    Toast.makeText(SignUpActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SignUpActivity.this, VerifyOTP.class);
+                    intent.putExtra("username", username);
+                    intent.putExtra("phoneNo", phoneNumber);
+                    intent.putExtra("password", password);
+                    intent.putExtra("whatToDo", "Create new user");
                     startActivity(intent);
+                    finish();
                 }
             }
 

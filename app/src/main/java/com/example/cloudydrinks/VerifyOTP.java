@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,12 +13,14 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cloudydrinks.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -29,33 +32,41 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class SignUpVerificationActivity extends AppCompatActivity {
+public class VerifyOTP extends AppCompatActivity {
     private EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
-    private Toolbar toolbar;
-    private TextView notification, phoneNumber;
+    private TextView notification, phoneNumberTV;
     private ProgressBar progressBar;
-    private MaterialButton buttonNext;
+    private MaterialButton verifyBtn;
     private FirebaseAuth mAuth;
-    private String verificationID;
+    private String verificationID, username, phoneNo, password, whatToDo;
     private String otp = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up_verification);
-        FirebaseApp.initializeApp(SignUpVerificationActivity.this);
+        setContentView(R.layout.activity_verify_otp);
+        FirebaseApp.initializeApp(VerifyOTP.this);
 
         mAuth = FirebaseAuth.getInstance();
 
         progressBar = findViewById(R.id.signup_verification_progress_bar);
-        buttonNext = findViewById(R.id.btn_nextStep);
+        verifyBtn = findViewById(R.id.btn_nextStep);
+        notification = findViewById(R.id.tv_notification);
+        phoneNumberTV = findViewById(R.id.tv_phoneNumber);
+
+        username = getIntent().getStringExtra("username");
+        password = getIntent().getStringExtra("password");
+        phoneNo = getIntent().getStringExtra("phoneNo");
+        whatToDo = getIntent().getStringExtra("whatToDo");
 
         // set up toolbar of verification activity
-        toolbar = findViewById(R.id.verification_toolbar);
+        Toolbar toolbar = findViewById(R.id.verification_toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -76,10 +87,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
         setupOTPInputs();
 
         // Get phone number from previous activity to send verification message
-        notification = findViewById(R.id.tv_notification);
-        phoneNumber = findViewById(R.id.tv_phoneNumber);
         String msg = "Mã xác thực (OTP) đã được gửi qua Tin nhắn của ";
-        String inputPhoneNumber = getIntent().getStringExtra("phoneNumberInput");
 
         // Make bold text
         SpannableString ss = new SpannableString(msg);
@@ -87,51 +95,49 @@ public class SignUpVerificationActivity extends AppCompatActivity {
         ss.setSpan(boldSpan, 34, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         notification.setText(ss);
-        phoneNumber.setText(inputPhoneNumber);
+        phoneNumberTV.setText(phoneNo);
 
         // send otp to message of phone number
-        sendOtp(inputPhoneNumber);
+        sendOtp(phoneNo);
 
-        buttonNext.setOnClickListener(new View.OnClickListener() {
+        verifyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setInProgress(true);
+                progressBar.setVisibility(View.VISIBLE);
                 otp = inputCode1.getText().toString() + inputCode2.getText().toString() + inputCode3.getText().toString() + inputCode4.getText().toString() + inputCode5.getText().toString() + inputCode6.getText().toString();
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationID, otp);
-                signInWithPhoneAuthCredential(credential);
+                verifyCode(otp);
             }
         });
 
     }
 
-    private void sendOtp(String phoneNumber) {
-        PhoneAuthOptions options =
-                PhoneAuthOptions.newBuilder(mAuth)
-                        .setPhoneNumber("+84"+phoneNumber)       // Phone number to verify
-                        .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-                        .setActivity(this)                 // (optional) Activity for callback binding
-                        // If no activity is passed, reCAPTCHA verification can not be used.
-                        .setCallbacks(mCallbacks)          // OnVerificationStateChangedCallbacks
-                        .build();
-        PhoneAuthProvider.verifyPhoneNumber(options);
+    private void sendOtp(String phoneNo) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                "+84"+phoneNo,
+                60,
+                TimeUnit.SECONDS,
+                VerifyOTP.this,
+                mCallbacks
+        );
     }
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks
-        mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
-            setInProgress(false);
-            signInWithPhoneAuthCredential(credential);
+            String code = credential.getSmsCode();
+            verifyCode(code);
+
         }
 
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
-            Toast.makeText(SignUpVerificationActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+            Toast.makeText(VerifyOTP.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        };
 
         @Override
         public void onCodeSent(@NonNull String s,
-                @NonNull PhoneAuthProvider.ForceResendingToken token) {
+                               @NonNull PhoneAuthProvider.ForceResendingToken token) {
             super.onCodeSent(s, token);
             verificationID = s;
         }
@@ -142,24 +148,45 @@ public class SignUpVerificationActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            startActivity(new Intent(getApplicationContext(), SignUpPasswordActivity.class));
-                            finish();
+                            progressBar.setVisibility(View.GONE);
+                            if (whatToDo.equals("Create new user")) {
+                                createUser();
+                                Toast.makeText(VerifyOTP.this, "Đăng ký tài khoản thành công", Toast.LENGTH_SHORT).show();
+                            } else {
+                                updateUser();
+                            }
                         } else {
-                            Toast.makeText(SignUpVerificationActivity.this, "Mã xác thực không đúng. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(VerifyOTP.this, "Xác thực không thành công. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
 
-    private void setInProgress(boolean inProgress) {
-        if (inProgress) {
-            progressBar.setVisibility(View.VISIBLE);
-            buttonNext.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            buttonNext.setVisibility(View.VISIBLE);
-        }
+    private void verifyCode(String code) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationID, code);
+        signInWithPhoneAuthCredential(credential);
     }
+
+    private void updateUser() {
+        Intent i = new Intent(getApplicationContext(), SetNewPassword.class);
+        i.putExtra("phoneNo", phoneNo);
+        startActivity(i);
+        finish();
+    }
+
+    private void createUser() {
+        FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
+        DatabaseReference reference = rootNode.getReference("users");
+
+        User newUser = new User(username, phoneNo, password);
+        reference.child(phoneNo).setValue(newUser);
+
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     private void setupOTPInputs() {
         inputCode1.addTextChangedListener(new TextWatcher() {
             @Override
@@ -170,6 +197,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().trim().isEmpty()) {
+                    inputCode2.setEnabled(true);
                     inputCode2.requestFocus();
                 }
             }
@@ -188,6 +216,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().trim().isEmpty()) {
+                    inputCode3.setEnabled(true);
                     inputCode3.requestFocus();
                 } else {
                     inputCode1.requestFocus();
@@ -208,6 +237,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().trim().isEmpty()) {
+                    inputCode4.setEnabled(true);
                     inputCode4.requestFocus();
                 } else {
                     inputCode2.requestFocus();
@@ -228,6 +258,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().trim().isEmpty()) {
+                    inputCode5.setEnabled(true);
                     inputCode5.requestFocus();
                 } else {
                     inputCode3.requestFocus();
@@ -248,6 +279,7 @@ public class SignUpVerificationActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().trim().isEmpty()) {
+                    inputCode6.setEnabled(true);
                     inputCode6.requestFocus();
                 } else {
                     inputCode4.requestFocus();
@@ -270,6 +302,14 @@ public class SignUpVerificationActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.toString().trim().isEmpty()) {
                     inputCode5.requestFocus();
+                    verifyBtn.setTextColor(Color.parseColor("#BCBCBC"));
+                    verifyBtn.setBackgroundColor(Color.parseColor("#DCDCDC"));
+                    verifyBtn.setEnabled(false);
+                    verifyBtn.setClickable(false);
+                } else {
+                    verifyBtn.setEnabled(true);
+                    verifyBtn.setBackgroundColor(Color.parseColor("#FB6E64"));
+                    verifyBtn.setTextColor(Color.WHITE);
                 }
             }
 
@@ -280,13 +320,13 @@ public class SignUpVerificationActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser curreUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (curreUser != null) {
-            startActivity(new Intent(getApplicationContext(), SignUpPasswordActivity.class));
-            finish();
-        }
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        FirebaseUser curreUser = FirebaseAuth.getInstance().getCurrentUser();
+//        if (curreUser != null) {
+//            startActivity(new Intent(getApplicationContext(), SignUpPasswordActivity.class));
+//            finish();
+//        }
+//    }
 }

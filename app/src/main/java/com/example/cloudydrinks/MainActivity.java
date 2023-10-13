@@ -137,16 +137,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-            finish();
-        }
-
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        if (user != null) {
+//            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+//            finish();
+//        }
+//
+//    }
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
