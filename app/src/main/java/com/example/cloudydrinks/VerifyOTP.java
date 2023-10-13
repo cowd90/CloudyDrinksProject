@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -149,7 +150,7 @@ public class VerifyOTP extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             progressBar.setVisibility(View.GONE);
-                            if (whatToDo.equals("Create new user")) {
+                            if (TextUtils.equals(whatToDo, "Create new user")) {
                                 createUser();
                                 Toast.makeText(VerifyOTP.this, "Đăng ký tài khoản thành công", Toast.LENGTH_SHORT).show();
                             } else {

@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (password.length() < 6) {
-                    passwordET.setError("Mật khẩu phải dài ít nhất 6 ký tự");
+                if (password.length() < 8) {
+                    passwordET.setError("Mật khẩu phải dài ít nhất 8 ký tự");
                     passwordET.requestFocus();
                     return;
                 }

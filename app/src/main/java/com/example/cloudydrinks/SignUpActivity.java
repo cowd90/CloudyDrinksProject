@@ -105,7 +105,6 @@ public class SignUpActivity extends AppCompatActivity {
                 passwordET.setSelection(passwordET.length());
             }
         });
-
         conPasswordIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,8 +185,8 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        if (password.length() < 6) {
-            passwordET.setError("Mật khẩu phải dài ít nhất 6 ký tự");
+        if (password.length() < 8) {
+            passwordET.setError("Mật khẩu phải dài ít nhất 8 ký tự");
             passwordET.requestFocus();
             return;
         }

@@ -67,6 +67,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), VerifyOTP.class);
                             intent.putExtra("phoneNo", userPhoneNumber);
+                            intent.putExtra("whatToDo", "Update user data");
                             startActivity(intent);
 
                             progressBar.setVisibility(View.GONE);
