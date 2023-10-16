@@ -1,4 +1,4 @@
-package com.example.cloudydrinks;
+package com.example.cloudydrinks.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,20 +10,15 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.cloudydrinks.R;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -99,20 +94,16 @@ public class MainActivity extends AppCompatActivity {
                 String password = passwordET.getText().toString().trim();
 
                 if (TextUtils.isEmpty(username)) {
+                    progressBar.setVisibility(View.GONE);
                     phoneNumberET.setError("Vui lòng không bỏ trống");
                     phoneNumberET.requestFocus();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
+                    progressBar.setVisibility(View.GONE);
                     passwordET.setError("Vui lòng xác nhận laị mật khẩu");
                     passwordIcon.requestFocus();
-                    return;
-                }
-
-                if (password.length() < 8) {
-                    passwordET.setError("Mật khẩu phải dài ít nhất 8 ký tự");
-                    passwordET.requestFocus();
                     return;
                 }
 
@@ -225,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
                         startActivity(intent);
                     } else {
+                        progressBar.setVisibility(View.GONE);
                         passwordET.setError("Mật khẩu không đúng");
                         passwordET.requestFocus();
                     }

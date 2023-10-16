@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".activity.MainActivity"
     android:background="@drawable/login"
     android:gravity="center"
     tools:ignore="HardcodedText">
@@ -50,7 +50,7 @@
             android:id="@+id/phoneNumberET"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:drawableStart="@drawable/person_outline"
+            android:drawableStart="@drawable/person_outline_32"
             android:drawablePadding="15dp"
             android:hint="Số điện thoại"
             android:inputType="phone"

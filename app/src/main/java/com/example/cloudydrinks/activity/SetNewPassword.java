@@ -1,4 +1,4 @@
-package com.example.cloudydrinks;
+package com.example.cloudydrinks.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,13 +7,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.cloudydrinks.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -38,32 +41,23 @@ public class SetNewPassword extends AppCompatActivity {
         String newPassword = passwordET.getText().toString().trim();
         String conNewPassword = conPasswordET.getText().toString().trim();
 
+        Log.d("password", newPassword);
+
+        String phoneNo = getIntent().getStringExtra("phoneNo");
+
         setPassWordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (newPassword.length() < 8) {
-                    passwordET.setError("Mật khẩu phải dài ít nhất 8 ký tự");
-                    passwordET.requestFocus();
-                } else {
-                    passwordET.setError(null);
-                }
+                if (TextUtils.equals(newPassword, conNewPassword)) {
 
-                if (conNewPassword.length() < 8) {
-                    conPasswordET.setError("Mật khẩu phải dài ít nhất 8 ký tự");
-                    conPasswordET.requestFocus();
-                } else {
-                    conPasswordET.setError(null);
-                }
+                    FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
+                    DatabaseReference reference = rootNode.getReference("users");
+                    Log.d("password", newPassword);
 
-                if (newPassword.equals(conNewPassword)) {
-                    Toast.makeText(SetNewPassword.this, "Cập nhật mật khẩu thành công!", Toast.LENGTH_SHORT).show();
-                    conPasswordET.setError(null);
-                    String phoneNo = getIntent().getStringExtra("phoneNo");
-
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
                     reference.child(phoneNo).child("password").setValue(newPassword);
 
+                    Toast.makeText(SetNewPassword.this, "Cập nhật mật khẩu thành công!", Toast.LENGTH_SHORT).show();
 
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 } else {

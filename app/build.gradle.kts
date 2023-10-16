@@ -41,4 +41,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("com.google.firebase:firebase-database:20.2.2")
     implementation(platform("com.google.firebase:firebase-bom:29.2.1"))
+    implementation("com.google.android.material:material:1.4.0-beta01")
+    implementation("com.github.bumptech.glide:glide:4.8.0");
+    implementation("com.google.code.gson:gson:2.8.7")
+    implementation("com.squareup.picasso:picasso:2.71828")
 }

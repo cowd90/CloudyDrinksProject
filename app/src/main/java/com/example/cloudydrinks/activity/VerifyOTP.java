@@ -1,4 +1,4 @@
-package com.example.cloudydrinks;
+package com.example.cloudydrinks.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,13 +14,13 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,9 +29,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -158,7 +156,6 @@ public class VerifyOTP extends AppCompatActivity {
                             }
                         } else {
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(VerifyOTP.this, "Xác thực không thành công. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -309,6 +306,7 @@ public class VerifyOTP extends AppCompatActivity {
                     verifyBtn.setClickable(false);
                 } else {
                     verifyBtn.setEnabled(true);
+                    verifyBtn.setClickable(true);
                     verifyBtn.setBackgroundColor(Color.parseColor("#FB6E64"));
                     verifyBtn.setTextColor(Color.WHITE);
                 }
