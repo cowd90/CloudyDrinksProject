@@ -42,7 +42,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Picasso.get().load(categoriesDomains.get(position).getCategory_img()).resize(30, 30).centerCrop().into(holder.categoryPic);
+        Picasso.get().load(categoriesDomains.get(position).getCategory_img()).into(holder.categoryPic);
         holder.categoryName.setText(categoriesDomains.get(position).getCategory_name());
 
 //        int drawableResourceId = holder.itemView.getContext().getResources().getIdentifier(picUrl, "drawable", holder.itemView.getContext().getPackageName());

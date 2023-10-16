@@ -1,9 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.ProductSearchingActivity">
+    tools:context=".activity.ProductSearchingActivity"
+    tools:ignore="HardcodedText">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/searchBarET"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:background="@drawable/search_edit_background"
+            android:singleLine="true"
+            android:ems="20"
+            android:maxLength="20"
+            android:drawableStart="@drawable/search"
+            android:drawablePadding="15dp"
+            android:paddingStart="15dp"
+            android:inputType="textVisiblePassword"
+            android:textSize="14sp"
+            android:hint="Tìm kiếm"
+            tools:ignore="RtlSymmetry"/>
+
+        <TextView
+            android:id="@+id/cancelSearchingTV"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Hủy"
+            android:textColor="#C38154"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/headerLayout"
+        android:background="#E1E1E1"
+        android:layout_marginTop="-10dp"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/allFoodRV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/view"
+        android:background="#F2EAD3"/>
+
+</RelativeLayout>

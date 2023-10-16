@@ -10,29 +10,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.domain.FoodDomain;
+import com.example.cloudydrinks.R;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class PopularArticleAdapter extends RecyclerView.Adapter<PopularArticleAdapter.ViewHolder> {
+public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHolder> {
     private ArrayList<FoodDomain> foodList;
 
-    public PopularArticleAdapter(ArrayList<FoodDomain> foodDomains) {
-        this.foodList = foodDomains;
+    public FoodListAdapter(ArrayList<FoodDomain> foodList) {
+        this.foodList = foodList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.display_popular_food, parent, false);
-        return new ViewHolder(inflate);
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.display_item_searching, parent, false);
+        return new FoodListAdapter.ViewHolder(inflate);
     }
 
     @SuppressLint("SetTextI18n")
-    @NonNull
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.foodNameTV.setText(foodList.get(position).getProduct_name());
@@ -46,14 +45,15 @@ public class PopularArticleAdapter extends RecyclerView.Adapter<PopularArticleAd
         return foodList.size();
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView foodNameTV, foodPriceTV;
         ImageView foodImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            foodNameTV = itemView.findViewById(R.id.foodNameTV);
-            foodPriceTV = itemView.findViewById(R.id.prizeTv);
-            foodImage = itemView.findViewById(R.id.popularFoodImage);
+            foodNameTV = itemView.findViewById(R.id.searchFoodNameTV);
+            foodPriceTV = itemView.findViewById(R.id.foodPriceTV);
+            foodImage = itemView.findViewById(R.id.foodImage);
         }
     }
     public static String numberCurrencyFormat(String number) {

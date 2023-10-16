@@ -9,13 +9,12 @@
     android:padding="10dp"
     android:layout_marginVertical="10dp"
     android:layout_marginHorizontal="20dp"
-    tools:ignore="HardcodedText"
-    android:backgroundTint="#FAF0D2">
+    tools:ignore="HardcodedText">
 
     <ImageView
         android:id="@+id/popularFoodImage"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:scaleType="centerCrop"
         android:src="@drawable/burger"
         android:layout_centerHorizontal="true"
@@ -28,38 +27,36 @@
         android:layout_below="@id/popularFoodImage"
         android:textColor="#373B54"
         android:textStyle="bold"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:layout_centerHorizontal="true"
         android:text="Textview"
         android:paddingBottom="10dp"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/foodNameTV"
         android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/prizeTv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="$0.0"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:textSize="14sp"
             android:textColor="#373B54"
-            android:layout_centerVertical="true"/>
+            android:layout_weight="5"/>
 
         <ImageView
             android:id="@+id/addBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:scaleType="centerCrop"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="0dp"
-            android:src="@drawable/plus_circle" />
+            android:src="@drawable/plus"
+            android:scaleType="centerCrop"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

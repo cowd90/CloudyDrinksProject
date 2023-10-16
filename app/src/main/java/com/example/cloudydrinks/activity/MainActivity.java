@@ -3,6 +3,7 @@ package com.example.cloudydrinks.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,15 +11,21 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.domain.CategoriesDomain;
+import com.example.cloudydrinks.domain.Food;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -71,6 +78,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Hide cursor when user is done typing
+        passwordET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                //triggered when done editing (as clicked done on keyboard)
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    passwordET.clearFocus();
+                }
+                return false;
+            }
+        });
+
         tv_signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,21 +125,6 @@ public class MainActivity extends AppCompatActivity {
                     passwordIcon.requestFocus();
                     return;
                 }
-
-//            mAuth.signInWithEmailAndPassword(username, password)
-//                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<AuthResult> task) {
-//                            if (task.isSuccessful()) {
-//                                progressBar.setVisibility(View.GONE);
-//                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-//                                finish();
-//                            } else {
-//                                progressBar.setVisibility(View.GONE);
-//                                Toast.makeText(MainActivity.this, "Tên đăng nhập hoặc mật khẩu không đúng", Toast.LENGTH_LONG).show();
-//                            }
-//                    });
-//                        }
                 if (validateUsername() && validatePassword()){
                     checkUser();
                 }
@@ -131,9 +135,12 @@ public class MainActivity extends AppCompatActivity {
 //    @Override
 //    protected void onStart() {
 //        super.onStart();
-//        FirebaseUser user = mAuth.getCurrentUser();
-//        if (user != null) {
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if (currentUser != null) {
 //            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+//            finish();
+//        } else {
+//            startActivity(new Intent(getApplicationContext(), MainActivity.class));
 //            finish();
 //        }
 //

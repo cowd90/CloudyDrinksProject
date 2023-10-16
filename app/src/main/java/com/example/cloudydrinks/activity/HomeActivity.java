@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.CategoryAdapter;
@@ -16,6 +18,9 @@ import com.example.cloudydrinks.adapter.PopularArticleAdapter;
 import com.example.cloudydrinks.domain.CategoriesDomain;
 import com.example.cloudydrinks.domain.FoodDomain;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,16 +33,30 @@ public class HomeActivity extends AppCompatActivity {
     private BottomNavigationView bottomNav;
     private RecyclerView.Adapter adapterCategory, adapterPopular;
     private DatabaseReference databaseReference;
+    private MaterialButton productSearchingBtn;
+    private ArrayList<FoodDomain> popularFoodList;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        mAuth = FirebaseAuth.getInstance();
 
         bottomNav = findViewById(R.id.bottomNav);
+        productSearchingBtn = findViewById(R.id.productSearchingBtn);
 
         recyclerViewCategory();
         recyclerViewPopular();
+
+        productSearchingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, ProductSearchingActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void recyclerViewCategory() {
@@ -76,7 +95,7 @@ public class HomeActivity extends AppCompatActivity {
         RecyclerView recyclerViewPopularList = findViewById(R.id.popularFoodRV);
         recyclerViewPopularList.setLayoutManager(gridLayoutManager);
 
-        ArrayList<FoodDomain> popularFoodList = new ArrayList<>();
+        popularFoodList = new ArrayList<>();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("products");
         databaseReference.addValueEventListener(new ValueEventListener() {

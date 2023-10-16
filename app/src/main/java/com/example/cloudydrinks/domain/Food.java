@@ -5,18 +5,18 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public class FoodDomain {
-    private int category_id;
+public class Food {
+    private CategoriesDomain category_id;
     private int product_id;
     private String product_name;
     private String product_img_url;
     private String product_description;
     private int product_price;
 
-    public FoodDomain() {
+    public Food() {
     }
 
-    public FoodDomain(int category_id, int product_id, String product_name, String product_img_url, String product_description, int product_price) {
+    public Food(CategoriesDomain category_id, int product_id, String product_name, String product_img_url, String product_description, int product_price) {
         this.category_id = category_id;
         this.product_id = product_id;
         this.product_name = product_name;
@@ -25,11 +25,11 @@ public class FoodDomain {
         this.product_price = product_price;
     }
 
-    public int getCategory_id() {
+    public CategoriesDomain getCategory_id() {
         return category_id;
     }
 
-    public void setCategory_id(int category_id) {
+    public void setCategory_id(CategoriesDomain category_id) {
         this.category_id = category_id;
     }
 
