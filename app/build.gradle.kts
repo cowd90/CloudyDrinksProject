@@ -45,4 +45,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.8.0");
     implementation("com.google.code.gson:gson:2.8.7")
     implementation("com.squareup.picasso:picasso:2.71828")
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-analytics")
+
 }

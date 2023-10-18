@@ -32,6 +32,7 @@
             android:inputType="textVisiblePassword"
             android:textSize="14sp"
             android:hint="Tìm kiếm"
+            android:imeOptions="actionDone"
             tools:ignore="RtlSymmetry"/>
 
         <TextView

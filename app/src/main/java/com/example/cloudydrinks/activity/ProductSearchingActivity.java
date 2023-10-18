@@ -2,22 +2,19 @@ package com.example.cloudydrinks.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.FoodListAdapter;
-import com.example.cloudydrinks.adapter.PopularArticleAdapter;
-import com.example.cloudydrinks.domain.FoodDomain;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.cloudydrinks.model.Product;
+import com.example.cloudydrinks.my_interface.IClickItemListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +26,7 @@ import java.util.ArrayList;
 public class ProductSearchingActivity extends AppCompatActivity {
 
     private TextView cancelSearchingTV;
-    private ArrayList<FoodDomain> foodList;
+    private ArrayList<Product> productList;
     private DatabaseReference databaseReference;
     private RecyclerView.Adapter adapter;
     @Override
@@ -54,18 +51,17 @@ public class ProductSearchingActivity extends AppCompatActivity {
         RecyclerView recyclerViewFoodList = findViewById(R.id.allFoodRV);
         recyclerViewFoodList.setLayoutManager(linearLayoutManager);
 
-        foodList = new ArrayList<>();
+        productList = new ArrayList<>();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("products");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                foodList.clear();
                 if(snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        FoodDomain foodDomain = dataSnapshot.getValue(FoodDomain.class);
-                        foodList.add(foodDomain);
+                        Product product = dataSnapshot.getValue(Product.class);
+                        productList.add(product);
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -77,8 +73,21 @@ public class ProductSearchingActivity extends AppCompatActivity {
             }
         });
 
-        adapter = new FoodListAdapter(foodList);
+        adapter = new FoodListAdapter(productList, new IClickItemListener() {
+            @Override
+            public void onClickItemProduct(Product product) {
+                onClickItem(product);
+            }
+        });
         recyclerViewFoodList.setAdapter(adapter);
+    }
+
+    private void onClickItem(Product product) {
+        Intent intent = new Intent(ProductSearchingActivity.this, ItemViewActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("product object", product);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

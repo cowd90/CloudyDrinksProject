@@ -11,17 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.domain.FoodDomain;
+import com.example.cloudydrinks.model.Product;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class PopularArticleAdapter extends RecyclerView.Adapter<PopularArticleAdapter.ViewHolder> {
-    private ArrayList<FoodDomain> foodList;
+    private ArrayList<Product> productList;
 
-    public PopularArticleAdapter(ArrayList<FoodDomain> foodDomains) {
-        this.foodList = foodDomains;
+    public PopularArticleAdapter(ArrayList<Product> productDomains) {
+        this.productList = productDomains;
     }
 
     @NonNull
@@ -35,15 +35,15 @@ public class PopularArticleAdapter extends RecyclerView.Adapter<PopularArticleAd
     @NonNull
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.foodNameTV.setText(foodList.get(position).getProduct_name());
-        String price = String.valueOf(foodList.get(position).getProduct_price());
+        holder.foodNameTV.setText(productList.get(position).getProduct_name());
+        String price = String.valueOf(productList.get(position).getProduct_price());
         holder.foodPriceTV.setText(numberCurrencyFormat(price)+"₫");
-        Picasso.get().load(foodList.get(position).getProduct_img_url()).into(holder.foodImage);
+        Picasso.get().load(productList.get(position).getProduct_img_url()).into(holder.foodImage);
     }
 
     @Override
     public int getItemCount() {
-        return foodList.size();
+        return productList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

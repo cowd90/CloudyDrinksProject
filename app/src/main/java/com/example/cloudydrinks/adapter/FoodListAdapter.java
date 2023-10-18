@@ -5,23 +5,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cloudydrinks.domain.FoodDomain;
+import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.my_interface.IClickItemListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHolder> {
-    private ArrayList<FoodDomain> foodList;
+    private ArrayList<Product> productList;
+    private IClickItemListener iClickItemListener;
 
-    public FoodListAdapter(ArrayList<FoodDomain> foodList) {
-        this.foodList = foodList;
+    public FoodListAdapter(ArrayList<Product> productList, IClickItemListener iClickItemListener) {
+        this.productList = productList;
+        this.iClickItemListener = iClickItemListener;
     }
 
     @NonNull
@@ -34,23 +40,38 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.foodNameTV.setText(foodList.get(position).getProduct_name());
-        String price = String.valueOf(foodList.get(position).getProduct_price());
+        final Product product = productList.get(position);
+
+        if (product == null) {
+            return;
+        }
+
+        holder.foodNameTV.setText(productList.get(position).getProduct_name());
+        String price = String.valueOf(productList.get(position).getProduct_price());
         holder.foodPriceTV.setText(numberCurrencyFormat(price)+"₫");
-        Picasso.get().load(foodList.get(position).getProduct_img_url()).into(holder.foodImage);
+        Picasso.get().load(productList.get(position).getProduct_img_url()).into(holder.foodImage);
+
+        holder.layoutItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                iClickItemListener.onClickItemProduct(product);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return foodList.size();
+        return productList.size();
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView foodNameTV, foodPriceTV;
         ImageView foodImage;
+        LinearLayout layoutItem;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            layoutItem = itemView.findViewById(R.id.layout_item);
             foodNameTV = itemView.findViewById(R.id.searchFoodNameTV);
             foodPriceTV = itemView.findViewById(R.id.foodPriceTV);
             foodImage = itemView.findViewById(R.id.foodImage);

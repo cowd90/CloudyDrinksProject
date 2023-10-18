@@ -1,14 +1,14 @@
-package com.example.cloudydrinks.domain;
+package com.example.cloudydrinks.model;
 
-public class CategoriesDomain {
+public class Categories {
     private int category_id;
     private String category_name;
     private String category_img;
 
-    public CategoriesDomain() {
+    public Categories() {
     }
 
-    public CategoriesDomain(int category_id, String category_name, String category_img) {
+    public Categories(int category_id, String category_name, String category_img) {
         this.category_id = category_id;
         this.category_name = category_name;
         this.category_img = category_img;
@@ -40,7 +40,7 @@ public class CategoriesDomain {
 
     @Override
     public String toString() {
-        return "CategoriesDomain{" +
+        return "Categories{" +
                 "category_id=" + category_id +
                 ", category_name='" + category_name + '\'' +
                 ", category_img='" + category_img + '\'' +

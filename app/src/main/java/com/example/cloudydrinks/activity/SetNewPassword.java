@@ -25,21 +25,24 @@ public class SetNewPassword extends AppCompatActivity {
     private ImageView passwordIcon, conPasswordIcon;
     private Button setPassWordBtn;
     private boolean passwordShowing = false;
-
+    private String newPassword, conNewPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_new_password);
 
-        passwordET = findViewById(R.id.passwordET);
-        conPasswordET = findViewById(R.id.conPasswordET);
+        passwordET = findViewById(R.id.newPasswordET);
+        conPasswordET = findViewById(R.id.conNewPasswordET);
         passwordIcon = findViewById(R.id.passwordIcon);
         conPasswordIcon = findViewById(R.id.conPasswordIcon);
         setPassWordBtn = findViewById(R.id.setPasswordBtn);
 
-        String newPassword = passwordET.getText().toString().trim();
-        String conNewPassword = conPasswordET.getText().toString().trim();
+        passwordET.addTextChangedListener(textWatcher);
+        conPasswordET.addTextChangedListener(textWatcher);
+
+        newPassword = passwordET.getText().toString().trim();
+        conNewPassword = conPasswordET.getText().toString().trim();
 
         Log.d("password", newPassword);
 
@@ -53,7 +56,6 @@ public class SetNewPassword extends AppCompatActivity {
 
                     FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
                     DatabaseReference reference = rootNode.getReference("users");
-                    Log.d("password", newPassword);
 
                     reference.child(phoneNo).child("password").setValue(newPassword);
 
@@ -64,33 +66,6 @@ public class SetNewPassword extends AppCompatActivity {
                     conPasswordET.setError("Mật khẩu không khớp");
                     conPasswordET.requestFocus();
                 }
-            }
-        });
-
-        passwordET.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!passwordET.getText().toString().trim().isEmpty()) {
-                    setPassWordBtn.setEnabled(true);
-                    setPassWordBtn.setClickable(true);
-                    setPassWordBtn.setBackgroundColor(Color.parseColor("#FB6E64"));
-                    setPassWordBtn.setTextColor(Color.WHITE);
-                } else {
-                    setPassWordBtn.setTextColor(Color.parseColor("#BCBCBC"));
-                    setPassWordBtn.setBackgroundColor(Color.parseColor("#DCDCDC"));
-                    setPassWordBtn.setEnabled(false);
-                    setPassWordBtn.setClickable(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -132,4 +107,31 @@ public class SetNewPassword extends AppCompatActivity {
             }
         });
     }
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if(!passwordET.getText().toString().trim().isEmpty() && !conPasswordET.getText().toString().trim().isEmpty()) {
+                setPassWordBtn.setEnabled(true);
+                setPassWordBtn.setClickable(true);
+                setPassWordBtn.setBackgroundColor(Color.parseColor("#FB6E64"));
+                setPassWordBtn.setTextColor(Color.WHITE);
+            } else {
+                setPassWordBtn.setTextColor(Color.parseColor("#BCBCBC"));
+                setPassWordBtn.setBackgroundColor(Color.parseColor("#DCDCDC"));
+                setPassWordBtn.setEnabled(false);
+                setPassWordBtn.setClickable(false);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 }

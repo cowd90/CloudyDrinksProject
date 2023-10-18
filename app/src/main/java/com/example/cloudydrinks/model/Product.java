@@ -1,11 +1,8 @@
-package com.example.cloudydrinks.domain;
+package com.example.cloudydrinks.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
-import androidx.annotation.NonNull;
-
-public class FoodDomain {
+public class Product implements Serializable {
     private int category_id;
     private int product_id;
     private String product_name;
@@ -13,10 +10,10 @@ public class FoodDomain {
     private String product_description;
     private int product_price;
 
-    public FoodDomain() {
+    public Product() {
     }
 
-    public FoodDomain(int category_id, int product_id, String product_name, String product_img_url, String product_description, int product_price) {
+    public Product(int category_id, int product_id, String product_name, String product_img_url, String product_description, int product_price) {
         this.category_id = category_id;
         this.product_id = product_id;
         this.product_name = product_name;

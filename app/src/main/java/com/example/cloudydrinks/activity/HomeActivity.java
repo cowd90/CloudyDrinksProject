@@ -15,12 +15,11 @@ import android.view.View;
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.CategoryAdapter;
 import com.example.cloudydrinks.adapter.PopularArticleAdapter;
-import com.example.cloudydrinks.domain.CategoriesDomain;
-import com.example.cloudydrinks.domain.FoodDomain;
+import com.example.cloudydrinks.model.Categories;
+import com.example.cloudydrinks.model.Product;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,8 +32,9 @@ public class HomeActivity extends AppCompatActivity {
     private BottomNavigationView bottomNav;
     private RecyclerView.Adapter adapterCategory, adapterPopular;
     private DatabaseReference databaseReference;
+    private RecyclerView recyclerViewCategoryList, recyclerViewPopularList;
     private MaterialButton productSearchingBtn;
-    private ArrayList<FoodDomain> popularFoodList;
+    private ArrayList<Product> popularProductList;
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +61,10 @@ public class HomeActivity extends AppCompatActivity {
 
     private void recyclerViewCategory() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView recyclerViewCategoryList = findViewById(R.id.categoryRV);
+        recyclerViewCategoryList = findViewById(R.id.categoryRV);
         recyclerViewCategoryList.setLayoutManager(linearLayoutManager);
 
-        ArrayList<CategoriesDomain> categoryList = new ArrayList<>();
+        ArrayList<Categories> categoryList = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference("categories");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -73,7 +73,7 @@ public class HomeActivity extends AppCompatActivity {
                 categoryList.clear();
                 if(snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        CategoriesDomain categories = dataSnapshot.getValue(CategoriesDomain.class);
+                        Categories categories = dataSnapshot.getValue(Categories.class);
                         categoryList.add(categories);
                     }
                 }
@@ -92,22 +92,22 @@ public class HomeActivity extends AppCompatActivity {
 
     private void recyclerViewPopular() {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(HomeActivity.this, 2, GridLayoutManager.VERTICAL, false);
-        RecyclerView recyclerViewPopularList = findViewById(R.id.popularFoodRV);
+        recyclerViewPopularList = findViewById(R.id.popularFoodRV);
         recyclerViewPopularList.setLayoutManager(gridLayoutManager);
 
-        popularFoodList = new ArrayList<>();
+        popularProductList = new ArrayList<>();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("products");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                popularFoodList.clear();
+                popularProductList.clear();
                 if(snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         Log.d("data", dataSnapshot.toString());
-                        FoodDomain foodDomain = dataSnapshot.getValue(FoodDomain.class);
-                        popularFoodList.add(foodDomain);
+                        Product productDomain = dataSnapshot.getValue(Product.class);
+                        popularProductList.add(productDomain);
                     }
                 }
                 adapterPopular.notifyDataSetChanged();
@@ -119,7 +119,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        adapterPopular = new PopularArticleAdapter(popularFoodList);
+        adapterPopular = new PopularArticleAdapter(popularProductList);
         recyclerViewPopularList.setAdapter(adapterPopular);
     }
 }

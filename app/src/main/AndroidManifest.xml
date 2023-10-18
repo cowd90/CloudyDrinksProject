@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -14,14 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CloudyDrinks"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31" >
+        tools:targetApi="31">
+        <activity
+            android:name=".activity.ItemViewActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.ProductSearchingActivity"
             android:exported="false"
-            android:parentActivityName=".activity.HomeActivity"/>
+            android:parentActivityName=".activity.HomeActivity" />
         <activity
             android:name=".activity.HomeActivity"
-            android:exported="false" />
+            android:exported="false"></activity>
         <activity
             android:name=".activity.SetNewPassword"
             android:exported="false" />
@@ -38,7 +41,7 @@
             android:parentActivityName=".activity.MainActivity" />
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
