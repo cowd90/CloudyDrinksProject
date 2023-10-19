@@ -41,11 +41,6 @@ public class SetNewPassword extends AppCompatActivity {
         passwordET.addTextChangedListener(textWatcher);
         conPasswordET.addTextChangedListener(textWatcher);
 
-        newPassword = passwordET.getText().toString().trim();
-        conNewPassword = conPasswordET.getText().toString().trim();
-
-        Log.d("password", newPassword);
-
         String phoneNo = getIntent().getStringExtra("phoneNo");
 
         setPassWordBtn.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +111,7 @@ public class SetNewPassword extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(!passwordET.getText().toString().trim().isEmpty() && !conPasswordET.getText().toString().trim().isEmpty()) {
+            if(!s.toString().trim().isEmpty()) {
                 setPassWordBtn.setEnabled(true);
                 setPassWordBtn.setClickable(true);
                 setPassWordBtn.setBackgroundColor(Color.parseColor("#FB6E64"));
@@ -131,7 +126,8 @@ public class SetNewPassword extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            newPassword = s.toString();
+            conNewPassword = s.toString();
         }
     };
 }

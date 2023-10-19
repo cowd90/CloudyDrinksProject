@@ -1,8 +1,10 @@
 package com.example.cloudydrinks.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatRadioButton;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -11,20 +13,28 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.model.Product;
+import com.example.cloudydrinks.utils.MySpannable;
+import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 
 public class ItemViewActivity extends AppCompatActivity {
-    private TextView largeSizePriceTV, mediumSizePriceTV, smallSizePriceTV;
     private ImageView productImage;
+    private AppCompatRadioButton largeSizeRB, mediumSizeRB, smallSizeRB;
     private TextView productNameTV, productPriceTV, productDescriptionTV;
+    private MaterialButton addToCartBtn;
+    private Product product;
+    private String priceText, btnText;
+    private int priceInt;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,28 +45,32 @@ public class ItemViewActivity extends AppCompatActivity {
         productPriceTV = findViewById(R.id.productPriceTV);
         productDescriptionTV = findViewById(R.id.productDescriptionTV);
         productImage = findViewById(R.id.productImage);
-        largeSizePriceTV = findViewById(R.id.largeSizePriceTV);
-        mediumSizePriceTV = findViewById(R.id.mediumSizePriceTV);
-        smallSizePriceTV = findViewById(R.id.smallSizePriceTV);
+
+        largeSizeRB = findViewById(R.id.largeRB);
+        mediumSizeRB = findViewById(R.id.mediumRB);
+        smallSizeRB = findViewById(R.id.smallRB);
+
+        addToCartBtn = findViewById(R.id.addToCartBtn);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             return;
         }
 
-        Product product = (Product) bundle.get("product object");
-        String priceString = String.valueOf(product.getProduct_price());
+        product = (Product) bundle.get("product object");
+
+        priceInt = product.getProduct_price();
+        String priceFromOBj = String.valueOf(priceInt);
+        priceText = numberCurrencyFormat(priceFromOBj)+"₫";
 
         Picasso.get().load(product.getProduct_img_url()).into(productImage);
         productNameTV.setText(product.getProduct_name());
-        productPriceTV.setText(numberCurrencyFormat(priceString)+"₫");
+        productPriceTV.setText(priceText);
         productDescriptionTV.setText(product.getProduct_description());
 
-        int priceInt = product.getProduct_price();
+        btnText = String.valueOf(addToCartBtn.getText());
 
-        largeSizePriceTV.setText(numberCurrencyFormat(String.valueOf(priceInt+20000))+"₫");
-        mediumSizePriceTV.setText(numberCurrencyFormat(String.valueOf(priceInt+10000))+"₫");
-        smallSizePriceTV.setText(numberCurrencyFormat(priceString)+"₫");
+        addToCartBtn.setText(btnText+priceText);
 
         // Set up product description (view more and show less function)
         makeTextViewResizable(productDescriptionTV, 2, "Xem thêm", true);
@@ -109,8 +123,7 @@ public class ItemViewActivity extends AppCompatActivity {
         SpannableStringBuilder ssb = new SpannableStringBuilder(strSpanned);
 
         if (str.contains(spanableText)) {
-            ssb.setSpan(new ClickableSpan() {
-
+            ssb.setSpan(new MySpannable(false){
                 @Override
                 public void onClick(View widget) {
                     tv.setLayoutParams(tv.getLayoutParams());
@@ -121,11 +134,46 @@ public class ItemViewActivity extends AppCompatActivity {
                     } else {
                         makeTextViewResizable(tv, 2, "Xem thêm", true);
                     }
-
                 }
             }, str.indexOf(spanableText), str.indexOf(spanableText) + spanableText.length(), 0);
 
         }
         return ssb;
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void onRadioButtonClicked(View view) {
+        boolean isSelected = ((AppCompatRadioButton)view).isChecked();
+        int id = view.getId();
+
+        if (id == R.id.smallRB) {
+            if (isSelected) {
+                smallSizeRB.setTextColor(Color.WHITE);
+                mediumSizeRB.setTextColor(Color.parseColor("#BA704F"));
+                largeSizeRB.setTextColor(Color.parseColor("#BA704F"));
+
+                productPriceTV.setText(priceText);
+                addToCartBtn.setText(btnText+priceText);
+            }
+        } else if (id == R.id.mediumRB) {
+            if (isSelected) {
+                mediumSizeRB.setTextColor(Color.WHITE);
+                smallSizeRB.setTextColor(Color.parseColor("#BA704F"));
+                largeSizeRB.setTextColor(Color.parseColor("#BA704F"));
+
+                productPriceTV.setText(numberCurrencyFormat(String.valueOf(priceInt+10000))+"₫");
+                addToCartBtn.setText(btnText+numberCurrencyFormat(String.valueOf(priceInt+10000))+"₫");
+            }
+        } else if (id == R.id.largeRB) {
+            if (isSelected) {
+                largeSizeRB.setTextColor(Color.WHITE);
+                smallSizeRB.setTextColor(Color.parseColor("#BA704F"));
+                mediumSizeRB.setTextColor(Color.parseColor("#BA704F"));
+
+                productPriceTV.setText(numberCurrencyFormat(String.valueOf(priceInt+20000))+"₫");
+                addToCartBtn.setText(btnText+numberCurrencyFormat(String.valueOf(priceInt+20000))+"₫");
+            }
+        }
+
     }
 }
