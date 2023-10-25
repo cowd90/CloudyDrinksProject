@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cloudydrinks.model.Product;
@@ -21,11 +19,11 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHolder> {
+public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
     private ArrayList<Product> productList;
     private IClickItemListener iClickItemListener;
 
-    public FoodListAdapter(ArrayList<Product> productList, IClickItemListener iClickItemListener) {
+    public ProductListAdapter(ArrayList<Product> productList, IClickItemListener iClickItemListener) {
         this.productList = productList;
         this.iClickItemListener = iClickItemListener;
     }
@@ -34,7 +32,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.display_item_searching, parent, false);
-        return new FoodListAdapter.ViewHolder(inflate);
+        return new ProductListAdapter.ViewHolder(inflate);
     }
 
     @SuppressLint("SetTextI18n")

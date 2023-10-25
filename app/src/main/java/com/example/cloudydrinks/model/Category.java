@@ -1,14 +1,16 @@
 package com.example.cloudydrinks.model;
 
-public class Categories {
+import java.io.Serializable;
+
+public class Category implements Serializable {
     private int category_id;
     private String category_name;
     private String category_img;
 
-    public Categories() {
+    public Category() {
     }
 
-    public Categories(int category_id, String category_name, String category_img) {
+    public Category(int category_id, String category_name, String category_img) {
         this.category_id = category_id;
         this.category_name = category_name;
         this.category_img = category_img;
@@ -40,7 +42,7 @@ public class Categories {
 
     @Override
     public String toString() {
-        return "Categories{" +
+        return "Category{" +
                 "category_id=" + category_id +
                 ", category_name='" + category_name + '\'' +
                 ", category_img='" + category_img + '\'' +

@@ -14,7 +14,7 @@
         android:id="@+id/itFavorite"
         android:title="Yêu thích"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/baseline_favorite_border_24"/>
+        android:icon="@drawable/ic_heart_outline"/>
 
     <item
         android:id="@+id/itCart"

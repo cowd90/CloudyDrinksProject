@@ -61,14 +61,14 @@
                                 android:textStyle="bold"
                                 android:layout_weight="7"/>
 
-                            <ImageView
+                            <CheckBox
                                 android:layout_width="0dp"
                                 android:layout_height="30dp"
                                 android:layout_weight="1"
-                                android:src="@drawable/baseline_favorite_border_24"
+                                android:button="@drawable/favorite_selector"
+                                app:useMaterialThemeColors="false"
                                 android:clickable="true"
-                                android:focusable="true"
-                                android:backgroundTint="@color/color_item_bottom_nav"/>
+                                android:focusable="true"/>
 
                         </LinearLayout>
 
@@ -156,7 +156,6 @@
                                     android:textColor="@color/white"
                                     android:textSize="16sp"
                                     android:textStyle="bold"
-                                    android:text="S"
                                     android:gravity="center"
                                     android:layout_weight="1"
                                     android:checked="true"
@@ -172,7 +171,6 @@
                                     android:textSize="16sp"
                                     android:textStyle="bold"
                                     android:button="@color/transparent"
-                                    android:text="M"
                                     android:gravity="center"
                                     android:layout_marginHorizontal="10dp"
                                     android:layout_weight="1"
@@ -187,7 +185,6 @@
                                     android:textSize="16sp"
                                     android:textStyle="bold"
                                     android:button="@color/transparent"
-                                    android:text="L"
                                     android:gravity="center"
                                     android:layout_weight="1"
                                     android:background="@drawable/radio_button_selector"

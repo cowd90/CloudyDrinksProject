@@ -16,6 +16,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activity.MyFragment"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CategoryProductActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ItemViewActivity"
             android:exported="false" />
         <activity
@@ -24,7 +30,7 @@
             android:parentActivityName=".activity.HomeActivity" />
         <activity
             android:name=".activity.HomeActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".activity.SetNewPassword"
             android:exported="false" />

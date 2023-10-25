@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    tools:ignore="HardcodedText">
+
+    <RelativeLayout
+        android:layout_width="200dp"
+        android:layout_height="250dp"
+        android:id="@+id/grid_view_data"
+        android:layout_gravity="center"
+        android:background="@drawable/white_recommended_btn"
+        android:elevation="10dp"
+        android:padding="10dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="20dp">
+
+        <ImageView
+            android:id="@+id/productImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/burger"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/productNameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/productImage"
+            android:textColor="#373B54"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:layout_centerHorizontal="true"
+            android:text="Textview"
+            android:paddingBottom="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/productNameTV"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/priceTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="$0.0"
+                android:textSize="14sp"
+                android:textColor="#373B54"
+                android:layout_weight="5"/>
+
+            <ImageView
+                android:id="@+id/addBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/plus"
+                android:scaleType="centerCrop"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

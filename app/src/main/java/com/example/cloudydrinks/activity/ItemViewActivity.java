@@ -1,5 +1,6 @@
 package com.example.cloudydrinks.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatRadioButton;
 
@@ -10,22 +11,25 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.model.Product;
+import com.example.cloudydrinks.model.Size;
 import com.example.cloudydrinks.utils.MySpannable;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class ItemViewActivity extends AppCompatActivity {
     private ImageView productImage;
@@ -33,14 +37,52 @@ public class ItemViewActivity extends AppCompatActivity {
     private TextView productNameTV, productPriceTV, productDescriptionTV;
     private MaterialButton addToCartBtn;
     private Product product;
+    private DatabaseReference databaseReference;
     private String priceText, btnText;
+    private ArrayList<Size> sizeList;
     private int priceInt;
+    private int upsizeM;
+    private int upsizeL;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_view);
 
+        sizeList = new ArrayList<>();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("sizes");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        Size size = dataSnapshot.getValue(Size.class);
+                        sizeList.add(size);
+                    }
+                    // Set up attributes
+                    for (int i = 0; i < sizeList.size(); i++) {
+                        if (sizeList.get(i).getSize_id() == 0) {
+                            smallSizeRB.setText(sizeList.get(i).getSize_name());
+                        } else if (sizeList.get(i).getSize_id() == 1) {
+                            mediumSizeRB.setText(sizeList.get(i).getSize_name());
+                            upsizeM = sizeList.get(i).getUpsize_price();
+                        } else if (sizeList.get(i).getSize_id() == 2) {
+                            largeSizeRB.setText(sizeList.get(i).getSize_name());
+                            upsizeL = sizeList.get(i).getUpsize_price();
+                        }
+                    }
+                }
+            }
+
+            @Override
+
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // Get elements from xml files
         productNameTV = findViewById(R.id.productNameTV);
         productPriceTV = findViewById(R.id.productPriceTV);
         productDescriptionTV = findViewById(R.id.productDescriptionTV);
@@ -52,11 +94,11 @@ public class ItemViewActivity extends AppCompatActivity {
 
         addToCartBtn = findViewById(R.id.addToCartBtn);
 
+        // Retrieve product object from previous activity
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             return;
         }
-
         product = (Product) bundle.get("product object");
 
         priceInt = product.getProduct_price();
@@ -90,7 +132,6 @@ public class ItemViewActivity extends AppCompatActivity {
         ViewTreeObserver vto = tv.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-            @SuppressWarnings("deprecation")
             @Override
             public void onGlobalLayout() {
                 String text;
@@ -161,8 +202,9 @@ public class ItemViewActivity extends AppCompatActivity {
                 smallSizeRB.setTextColor(Color.parseColor("#BA704F"));
                 largeSizeRB.setTextColor(Color.parseColor("#BA704F"));
 
-                productPriceTV.setText(numberCurrencyFormat(String.valueOf(priceInt+10000))+"₫");
-                addToCartBtn.setText(btnText+numberCurrencyFormat(String.valueOf(priceInt+10000))+"₫");
+                int sizeMPrice = priceInt + upsizeM;
+                productPriceTV.setText(numberCurrencyFormat(String.valueOf(sizeMPrice))+"₫");
+                addToCartBtn.setText(btnText+numberCurrencyFormat(String.valueOf(sizeMPrice))+"₫");
             }
         } else if (id == R.id.largeRB) {
             if (isSelected) {
@@ -170,8 +212,9 @@ public class ItemViewActivity extends AppCompatActivity {
                 smallSizeRB.setTextColor(Color.parseColor("#BA704F"));
                 mediumSizeRB.setTextColor(Color.parseColor("#BA704F"));
 
-                productPriceTV.setText(numberCurrencyFormat(String.valueOf(priceInt+20000))+"₫");
-                addToCartBtn.setText(btnText+numberCurrencyFormat(String.valueOf(priceInt+20000))+"₫");
+                int sizeLPrice = priceInt + upsizeL;
+                productPriceTV.setText(numberCurrencyFormat(String.valueOf(sizeLPrice))+"₫");
+                addToCartBtn.setText(btnText+numberCurrencyFormat(String.valueOf(sizeLPrice))+"₫");
             }
         }
 

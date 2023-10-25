@@ -47,5 +47,6 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.71828")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-analytics")
-
+    implementation("me.relex:circleindicator:1.3.2")
+    implementation("me.relex:circleindicator:2.1.6")
 }
