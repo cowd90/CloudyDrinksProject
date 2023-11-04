@@ -43,7 +43,8 @@ public class AddressActivity extends AppCompatActivity {
     private String userPhoneNumber;
     private DatabaseReference databaseReference;
     private Contact contact;
-    private int position;
+    private String fullName, phoneNo, district, ward, street;
+    private int wardPosition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,8 +152,6 @@ public class AddressActivity extends AppCompatActivity {
                     }
                     wardAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
                     wardSpinner.setAdapter(wardAdapter);
-                    position = wardAdapter.getPosition(contact.getWard());
-
                     wardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -206,19 +205,143 @@ public class AddressActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(onSubmitListener);
     }
     public void loadAddressData() {
-        fullNameET.setText(contact.getFullName());
-        phoneNumberET.setText(contact.getPhoneNo());
-        streetET.setText(contact.getStreet());
+        if (contact != null) {
+            fullName = contact.getFullName();
+            phoneNo = contact.getPhoneNo();
+            district = contact.getDistrict();
+            ward = contact.getWard();
+            street = contact.getStreet();
 
-        // set data for district spinner
-        String districtValue = contact.getDistrict();
-        int districtPosition = districtAdapter.getPosition(districtValue);
-        districtSpinner.setSelection(districtPosition);
+            getWardAdapterResource();
 
-        // set data for ward spinner
-        String wardValue = contact.getWard();
-        int wardPosition = wardAdapter.getPosition(wardValue);
-        wardSpinner.setSelection(position);
+            fullNameET.setText(fullName);
+            phoneNumberET.setText(phoneNo);
+            streetET.setText(street);
+
+            // set data for district spinner
+            int districtPosition = districtAdapter.getPosition(district);
+            districtSpinner.setSelection(districtPosition);
+
+            // set data for ward spinner
+            wardPosition = wardAdapter.getPosition(ward);
+            wardSpinner.setSelection(wardPosition);
+        }
+    }
+    public void getWardAdapterResource() {
+        districtSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedDistrict = districtSpinner.getSelectedItem().toString();
+
+                int parentId = parent.getId();
+                if (parentId == R.id.district) {
+                    switch (district) {
+                        case "Chọn Quận/Huyện":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_default_ward, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "TP Thủ Đức":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_thu_duc, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 1":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_1, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 3":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_3, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 4":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_4, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 5":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_5, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 6":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_6, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 7":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_7, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 8":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_8, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 10":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_10, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 11":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_11, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận 12":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_12, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận Bình Tân":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_binh_tan, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận Bình Thạnh":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_binh_thanh, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận Gò Vấp":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_go_vap, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận Phú Nhuận":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_phu_nhuan, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận Tân Bình":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_tan_binh, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Quận Tân Phú":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_tan_phu, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Huyện Bình Chánh":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_can_gio, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Huyện Cần Giờ":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_tan_phu, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Huyện Củ Chi":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_cu_chi, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Huyện Hóc Môn":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_hoc_mon, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        case "Huyện Nhà Bè":
+                            wardAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.arr_district_nha_be, R.layout.spinner_layout);
+                            wardPosition = wardAdapter.getPosition(ward);
+                            break;
+                        default:
+                            break;
+                    }
+                    wardAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
+                    wardSpinner.setAdapter(wardAdapter);
+                    wardSpinner.setSelection(wardPosition);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
     public void createOrUpdateAddress() {
         databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber);
