@@ -16,7 +16,6 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#EAD7BB"
             android:paddingBottom="75dp">
 
             <LinearLayout
@@ -36,19 +35,20 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="@drawable/circle_background_recyclerview">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginHorizontal="15dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_marginHorizontal="15dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="30dp"
                             android:gravity="center"
                             tools:ignore="MissingClass">
 
@@ -62,11 +62,11 @@
                                 android:layout_weight="7"/>
 
                             <CheckBox
+                                android:id="@+id/favCheckbox"
                                 android:layout_width="0dp"
                                 android:layout_height="30dp"
                                 android:layout_weight="1"
                                 android:button="@drawable/favorite_selector"
-                                app:useMaterialThemeColors="false"
                                 android:clickable="true"
                                 android:focusable="true"/>
 
@@ -79,7 +79,6 @@
                             android:text="65.000đ"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:layout_marginHorizontal="15dp"
                             android:layout_marginTop="5dp"/>
 
                         <TextView
@@ -90,7 +89,6 @@
                             android:text="This is description"
                             android:textSize="12sp"
                             android:textColor="#717171"
-                            android:layout_marginHorizontal="15dp"
                             android:layout_marginBottom="15dp"/>
 
                         <View
@@ -272,6 +270,7 @@
                     </RelativeLayout>
 
                     <TextView
+                        android:id="@+id/quantityTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1"
@@ -296,7 +295,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/addToCartBtn"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="60dp"
                         app:backgroundTint="#FFAF41"
                         app:cornerRadius="8dp"

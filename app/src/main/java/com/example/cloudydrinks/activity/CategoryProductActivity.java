@@ -32,16 +32,21 @@ public class CategoryProductActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private RecyclerView.Adapter adapter;
     private Category category;
+    private String userPhoneNo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
+        // Get items of the category
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             return;
         }
         category = (Category) bundle.get("category");
+
+        // Get current user
+        userPhoneNo = getIntent().getStringExtra("userPhoneNumber");
 
         // set up toolbar of sign up activity
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -98,6 +103,7 @@ public class CategoryProductActivity extends AppCompatActivity {
         Intent intent = new Intent(CategoryProductActivity.this, ItemViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("product object", product);
+        intent.putExtra("userPhoneNumber", userPhoneNo);
         intent.putExtras(bundle);
         startActivity(intent);
     }

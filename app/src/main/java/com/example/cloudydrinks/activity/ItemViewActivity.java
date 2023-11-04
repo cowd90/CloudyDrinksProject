@@ -1,6 +1,7 @@
 package com.example.cloudydrinks.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatRadioButton;
 
@@ -11,16 +12,27 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.model.Size;
 import com.example.cloudydrinks.utils.MySpannable;
+import com.example.cloudydrinks.utils.NumberCurrencyFormatUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,19 +42,26 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemViewActivity extends AppCompatActivity {
-    private ImageView productImage;
+    private ImageView productImage, plusBtn, minusBtn;
     private AppCompatRadioButton largeSizeRB, mediumSizeRB, smallSizeRB;
-    private TextView productNameTV, productPriceTV, productDescriptionTV;
+    private TextView productNameTV, productPriceTV, productDescriptionTV, quantityTV;
     private MaterialButton addToCartBtn;
     private Product product;
     private DatabaseReference databaseReference;
     private String priceText, btnText;
     private ArrayList<Size> sizeList;
-    private int priceInt;
-    private int upsizeM;
-    private int upsizeL;
+    private int price;
+    private int upsizeMPrice;
+    private int upsizeLPrice;
+    private int quantity, currentPrice;
+    private String sizeTxt;
+    private String userPhoneNumber;
+    private CheckBox favoriteCheckbox;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +70,32 @@ public class ItemViewActivity extends AppCompatActivity {
 
         sizeList = new ArrayList<>();
 
+        // Get elements from xml files
+        productNameTV = findViewById(R.id.productNameTV);
+        productPriceTV = findViewById(R.id.productPriceTV);
+        productDescriptionTV = findViewById(R.id.productDescriptionTV);
+        productImage = findViewById(R.id.productImage);
+
+        largeSizeRB = findViewById(R.id.largeRB);
+        mediumSizeRB = findViewById(R.id.mediumRB);
+        smallSizeRB = findViewById(R.id.smallRB);
+
+        plusBtn = findViewById(R.id.plusBtn);
+        minusBtn = findViewById(R.id.minusBtn);
+        quantityTV = findViewById(R.id.quantityTV);
+        addToCartBtn = findViewById(R.id.addToCartBtn);
+        favoriteCheckbox = findViewById(R.id.favCheckbox);
+
+        // Get user phone number
+        userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
+
+        // Get size attributes
         databaseReference = FirebaseDatabase.getInstance().getReference("sizes");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
+                    sizeList.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         Size size = dataSnapshot.getValue(Size.class);
                         sizeList.add(size);
@@ -64,12 +104,13 @@ public class ItemViewActivity extends AppCompatActivity {
                     for (int i = 0; i < sizeList.size(); i++) {
                         if (sizeList.get(i).getSize_id() == 0) {
                             smallSizeRB.setText(sizeList.get(i).getSize_name());
+                            sizeTxt = smallSizeRB.getText().toString();
                         } else if (sizeList.get(i).getSize_id() == 1) {
                             mediumSizeRB.setText(sizeList.get(i).getSize_name());
-                            upsizeM = sizeList.get(i).getUpsize_price();
+                            upsizeMPrice = price + sizeList.get(i).getUpsize_price();
                         } else if (sizeList.get(i).getSize_id() == 2) {
                             largeSizeRB.setText(sizeList.get(i).getSize_name());
-                            upsizeL = sizeList.get(i).getUpsize_price();
+                            upsizeLPrice = price + sizeList.get(i).getUpsize_price();
                         }
                     }
                 }
@@ -82,29 +123,20 @@ public class ItemViewActivity extends AppCompatActivity {
             }
         });
 
-        // Get elements from xml files
-        productNameTV = findViewById(R.id.productNameTV);
-        productPriceTV = findViewById(R.id.productPriceTV);
-        productDescriptionTV = findViewById(R.id.productDescriptionTV);
-        productImage = findViewById(R.id.productImage);
-
-        largeSizeRB = findViewById(R.id.largeRB);
-        mediumSizeRB = findViewById(R.id.mediumRB);
-        smallSizeRB = findViewById(R.id.smallRB);
-
-        addToCartBtn = findViewById(R.id.addToCartBtn);
-
         // Retrieve product object from previous activity
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             return;
         }
+
         product = (Product) bundle.get("product object");
+        // price of product
+        price = product.getProduct_price();
 
-        priceInt = product.getProduct_price();
-        String priceFromOBj = String.valueOf(priceInt);
-        priceText = numberCurrencyFormat(priceFromOBj)+"₫";
+        String priceFromOBj = String.valueOf(price);
+        priceText = NumberCurrencyFormatUtil.numberCurrencyFormat(priceFromOBj);
 
+        // Upload image, name, price, and description of product
         Picasso.get().load(product.getProduct_img_url()).into(productImage);
         productNameTV.setText(product.getProduct_name());
         productPriceTV.setText(priceText);
@@ -117,12 +149,160 @@ public class ItemViewActivity extends AppCompatActivity {
         // Set up product description (view more and show less function)
         makeTextViewResizable(productDescriptionTV, 2, "Xem thêm", true);
 
+        plusBtn.setOnClickListener(plusButtonOnClickListener);
+
+        minusBtn.setOnClickListener(minusButtonOnClickListener);
+
+        addToCartBtn.setOnClickListener(addToCartOnClickListener);
+
+        favoriteCheckbox.setOnCheckedChangeListener(addToFavoriteListListener);
+
+    }
+    public CompoundButton.OnCheckedChangeListener addToFavoriteListListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            String path = product.getProduct_name();
+
+            DatabaseReference wishList = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber);
+            wishList.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    if (buttonView.isChecked()) {
+                        wishList.child("wishlist").child(path).setValue(product).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(ItemViewActivity.this, "Đã thêm vào danh sách yêu thích!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        wishList.child("wishlist").child(path).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(ItemViewActivity.this, "Đã xóa khỏi danh sách yêu thích!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    };
+
+    public View.OnClickListener addToCartOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            addToCart(product);
+        }
+    };
+
+    private void addToCart(Product product) {
+        String path = product.getProduct_name() + "_" + sizeTxt;
+        int quantity = Integer.parseInt(quantityTV.getText().toString().trim());
+
+        DatabaseReference userCart = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("Cart");
+        userCart.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild(path)) { // if user already have item in cart
+                    // Just update quantity and total price of that item
+                    CartModel cartModel = snapshot.child(path).getValue(CartModel.class);
+                    cartModel.setQuantity(cartModel.getQuantity() + quantity);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("quantity", cartModel.getQuantity());
+                    map.put("totalPrice", cartModel.getQuantity() * cartModel.getProduct_price());
+
+                    userCart.child(path).updateChildren(map, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+
+                            Toast.makeText(ItemViewActivity.this, "Đã cập nhật giỏ hàng!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else { // If item doesn't not exist in cart, add new one
+                    CartModel cartModel = new CartModel();
+
+                    cartModel.setProduct_id(product.getProduct_id());
+                    cartModel.setProduct_name(product.getProduct_name());
+                    cartModel.setProduct_img_url(product.getProduct_img_url());
+
+                    if (smallSizeRB.isChecked()) {
+                        cartModel.setSize(smallSizeRB.getText().toString());
+                        cartModel.setProduct_price(price);
+                    } else if (mediumSizeRB.isChecked()) {
+                        cartModel.setSize(mediumSizeRB.getText().toString());
+                        cartModel.setProduct_price(upsizeMPrice);
+                    } else if (largeSizeRB.isChecked()) {
+                        cartModel.setSize(largeSizeRB.getText().toString());
+                        cartModel.setProduct_price(upsizeLPrice);
+                    }
+
+                    cartModel.setQuantity(quantity);
+
+                    cartModel.setTotalPrice(cartModel.getProduct_price() * cartModel.getQuantity());
+                    userCart.child(path).setValue(cartModel, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                            Toast.makeText(ItemViewActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
-    public static String numberCurrencyFormat(String number) {
-        DecimalFormat decimalFormat = new DecimalFormat("###,###");
-        return decimalFormat.format(Integer.parseInt(number));
-    }
+    public View.OnClickListener plusButtonOnClickListener = new View.OnClickListener() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onClick(View v) {
+            quantity = Integer.parseInt(String.valueOf(quantityTV.getText()));
+            quantity++;
+
+            // Check customer choose which size
+            if (smallSizeRB.isChecked()) {
+                currentPrice = quantity * price;
+            } else if (mediumSizeRB.isChecked()) {
+                currentPrice = quantity * upsizeMPrice;
+            } else if (largeSizeRB.isChecked()) {
+                currentPrice = quantity * upsizeLPrice;
+            }
+
+            addToCartBtn.setText(btnText+NumberCurrencyFormatUtil.numberCurrencyFormat(String.valueOf(currentPrice)));
+            quantityTV.setText(String.valueOf(quantity));
+        }
+    };
+
+    public View.OnClickListener minusButtonOnClickListener = new View.OnClickListener() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onClick(View v) {
+            quantity = Integer.parseInt(String.valueOf(quantityTV.getText()));
+            if (quantity == 1) {
+                quantity = 1;
+            } else {
+                quantity--;
+            }
+            // Check customer choose which size
+            if (smallSizeRB.isChecked()) {
+                currentPrice = quantity * price;
+            } else if (mediumSizeRB.isChecked()) {
+                currentPrice = quantity * upsizeMPrice;
+            } else if (largeSizeRB.isChecked()) {
+                currentPrice = quantity * upsizeLPrice;
+            }
+
+            addToCartBtn.setText(btnText+ NumberCurrencyFormatUtil.numberCurrencyFormat(String.valueOf(currentPrice)));
+            quantityTV.setText(String.valueOf(quantity));
+        }
+    };
 
     public static void makeTextViewResizable(final TextView tv, final int maxLine, final String expandText, final boolean viewMore) {
 
@@ -181,40 +361,56 @@ public class ItemViewActivity extends AppCompatActivity {
         }
         return ssb;
     }
-
     @SuppressLint("SetTextI18n")
     public void onRadioButtonClicked(View view) {
-        boolean isSelected = ((AppCompatRadioButton)view).isChecked();
+        boolean isSelected = ((AppCompatRadioButton) view).isChecked();
         int id = view.getId();
 
         if (id == R.id.smallRB) {
             if (isSelected) {
+                sizeTxt = smallSizeRB.getText().toString();
+                quantityTV.setText(String.valueOf(1));
+
                 smallSizeRB.setTextColor(Color.WHITE);
                 mediumSizeRB.setTextColor(Color.parseColor("#BA704F"));
                 largeSizeRB.setTextColor(Color.parseColor("#BA704F"));
 
                 productPriceTV.setText(priceText);
-                addToCartBtn.setText(btnText+priceText);
+
+                quantity = Integer.parseInt(String.valueOf(quantityTV.getText()));
+                currentPrice = quantity * price;
+
+                addToCartBtn.setText(btnText+NumberCurrencyFormatUtil.numberCurrencyFormat(String.valueOf(currentPrice)));
             }
         } else if (id == R.id.mediumRB) {
             if (isSelected) {
+                sizeTxt = mediumSizeRB.getText().toString();
+                quantityTV.setText(String.valueOf(1));
+
                 mediumSizeRB.setTextColor(Color.WHITE);
                 smallSizeRB.setTextColor(Color.parseColor("#BA704F"));
                 largeSizeRB.setTextColor(Color.parseColor("#BA704F"));
 
-                int sizeMPrice = priceInt + upsizeM;
-                productPriceTV.setText(numberCurrencyFormat(String.valueOf(sizeMPrice))+"₫");
-                addToCartBtn.setText(btnText+numberCurrencyFormat(String.valueOf(sizeMPrice))+"₫");
+                productPriceTV.setText(NumberCurrencyFormatUtil.numberCurrencyFormat(String.valueOf(upsizeMPrice)));
+
+                quantity = Integer.parseInt(String.valueOf(quantityTV.getText()));
+                currentPrice = quantity * upsizeMPrice;
+                addToCartBtn.setText(btnText+NumberCurrencyFormatUtil.numberCurrencyFormat(String.valueOf(currentPrice)));
             }
         } else if (id == R.id.largeRB) {
             if (isSelected) {
+                sizeTxt = largeSizeRB.getText().toString();
+                quantityTV.setText(String.valueOf(1));
+
                 largeSizeRB.setTextColor(Color.WHITE);
                 smallSizeRB.setTextColor(Color.parseColor("#BA704F"));
                 mediumSizeRB.setTextColor(Color.parseColor("#BA704F"));
 
-                int sizeLPrice = priceInt + upsizeL;
-                productPriceTV.setText(numberCurrencyFormat(String.valueOf(sizeLPrice))+"₫");
-                addToCartBtn.setText(btnText+numberCurrencyFormat(String.valueOf(sizeLPrice))+"₫");
+                productPriceTV.setText(NumberCurrencyFormatUtil.numberCurrencyFormat(String.valueOf(upsizeLPrice)));
+
+                quantity = Integer.parseInt(String.valueOf(quantityTV.getText()));
+                currentPrice = quantity * upsizeLPrice;
+                addToCartBtn.setText(btnText+NumberCurrencyFormatUtil.numberCurrencyFormat(String.valueOf(currentPrice)));
             }
         }
 

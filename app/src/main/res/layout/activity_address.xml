@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AddressActivity"
+    tools:ignore="HardcodedText">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="Thêm địa chỉ nhận hàng"/>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/toolbar"
+        android:background="#E1E1E1"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/view">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Liên hệ"
+                    android:textColor="#858585"/>
+
+                <EditText
+                    android:id="@+id/fullNameET"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:paddingStart="20dp"
+                    android:padding="10dp"
+                    android:hint="Họ và tên"
+                    android:inputType="textAutoComplete"
+                    android:maxLength="30"
+                    android:maxLines="1"
+                    android:textSize="15sp"
+                    android:textColorHint="#9C9B9B"
+                    android:autofillHints="username"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/edit_text_rounded_corner"
+                    android:elevation="10dp"
+                    android:layout_margin="10dp"
+                    android:textCursorDrawable="@drawable/text_cursor"
+                    tools:ignore="RtlSymmetry"/>
+
+                <EditText
+                    android:id="@+id/phoneNumberET"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:paddingStart="20dp"
+                    android:padding="10dp"
+                    android:hint="Số điện thoại"
+                    android:inputType="phone"
+                    android:maxLength="30"
+                    android:maxLines="1"
+                    android:textSize="15sp"
+                    android:textColorHint="#9C9B9B"
+                    android:autofillHints="phone"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/edit_text_rounded_corner"
+                    android:elevation="10dp"
+                    android:layout_margin="10dp"
+                    android:textCursorDrawable="@drawable/text_cursor"
+                    tools:ignore="RtlSymmetry"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Địa chỉ"
+                    android:textColor="#858585"/>
+
+                <EditText
+                    android:id="@+id/cityET"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:paddingStart="20dp"
+                    android:padding="10dp"
+                    android:text="Thành phố Hồ Chí Minh"
+                    android:textColor="#9C9B9B"
+                    android:textSize="15sp"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/edit_text_rounded_corner"
+                    android:backgroundTint="#E0E1E1"
+                    android:elevation="10dp"
+                    android:layout_margin="10dp"
+                    android:enabled="false"
+                    tools:ignore="RtlSymmetry"/>
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:id="@+id/district"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="@drawable/border"/>
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:id="@+id/ward"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="@drawable/border"/>
+
+                <EditText
+                    android:id="@+id/streetET"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:paddingStart="20dp"
+                    android:padding="10dp"
+                    android:hint="Số nhà, tên đường"
+                    android:inputType="textAutoComplete"
+                    android:maxLength="50"
+                    android:maxLines="1"
+                    android:textSize="15sp"
+                    android:textColorHint="#9C9B9B"
+                    android:background="@drawable/edit_text_rounded_corner"
+                    android:elevation="10dp"
+                    android:layout_margin="10dp"
+                    android:textCursorDrawable="@drawable/text_cursor"
+                    tools:ignore="RtlSymmetry"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/submitBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cornerRadius="0dp"
+                android:enabled="false"
+                android:text="HOÀN THÀNH"
+                android:layout_marginTop="30dp"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

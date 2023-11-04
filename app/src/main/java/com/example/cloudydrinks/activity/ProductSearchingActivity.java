@@ -2,13 +2,19 @@ package com.example.cloudydrinks.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
@@ -28,27 +34,35 @@ public class ProductSearchingActivity extends AppCompatActivity {
     private TextView cancelSearchingTV;
     private ArrayList<Product> productList;
     private DatabaseReference databaseReference;
-    private RecyclerView.Adapter adapter;
+    private ProductListAdapter adapter;
+    private RecyclerView recyclerViewFoodList;
+    private SearchView searchView;
+    private String userPhoneNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_searching);
 
         cancelSearchingTV = findViewById(R.id.cancelSearchingTV);
+        searchView = findViewById(R.id.searchBarET);// Get user phone number
+
+        // Get user phone number
+        userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
 
         generateFoodList();
 
         cancelSearchingTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ProductSearchingActivity.this, HomeActivity.class));
-                finish();
+                Intent intent = new Intent(ProductSearchingActivity.this, HomeActivity.class);
+                intent.putExtra("userPhoneNumber", userPhoneNumber);
+                startActivity(intent);
             }
         });
     }
     private void generateFoodList() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ProductSearchingActivity.this, LinearLayoutManager.VERTICAL, false);
-        RecyclerView recyclerViewFoodList = findViewById(R.id.allFoodRV);
+        recyclerViewFoodList = findViewById(R.id.allFoodRV);
         recyclerViewFoodList.setLayoutManager(linearLayoutManager);
 
         productList = new ArrayList<>();
@@ -72,13 +86,27 @@ public class ProductSearchingActivity extends AppCompatActivity {
 
             }
         });
-
-        adapter = new ProductListAdapter(productList, new IClickItemListener() {
+        adapter = new ProductListAdapter(productList, productList, new IClickItemListener() {
             @Override
             public void onClickItemProduct(Product product) {
                 onClickItem(product);
             }
         });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
         recyclerViewFoodList.setAdapter(adapter);
     }
 
@@ -86,10 +114,10 @@ public class ProductSearchingActivity extends AppCompatActivity {
         Intent intent = new Intent(ProductSearchingActivity.this, ItemViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("product object", product);
+        intent.putExtra("userPhoneNumber", userPhoneNumber);
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();

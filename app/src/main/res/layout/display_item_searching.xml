@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_item"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="130dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="HardcodedText"
     android:layout_margin="15dp"
@@ -49,32 +49,6 @@
                 android:layout_marginTop="10dp"/>
 
         </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:focusable="true"
-                app:cardCornerRadius="30dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="15dp">
-
-                <ImageView
-                    android:id="@+id/addBtn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/plus"
-                    android:scaleType="centerCrop"/>
-
-            </androidx.cardview.widget.CardView>
-
-        </RelativeLayout>
 
     </LinearLayout>
 

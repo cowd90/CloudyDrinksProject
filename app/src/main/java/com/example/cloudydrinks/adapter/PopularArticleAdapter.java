@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.my_interface.IClickItemListener;
+import com.example.cloudydrinks.utils.NumberCurrencyFormatUtil;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -49,7 +50,7 @@ public class PopularArticleAdapter extends RecyclerView.Adapter<PopularArticleAd
 
         holder.foodNameTV.setText(productList.get(position).getProduct_name());
         String price = String.valueOf(productList.get(position).getProduct_price());
-        holder.foodPriceTV.setText(numberCurrencyFormat(price)+"₫");
+        holder.foodPriceTV.setText(NumberCurrencyFormatUtil.numberCurrencyFormat(price));
         Picasso.get().load(productList.get(position).getProduct_img_url()).into(holder.foodImage);
         holder.layoutItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,13 +72,9 @@ public class PopularArticleAdapter extends RecyclerView.Adapter<PopularArticleAd
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             foodNameTV = itemView.findViewById(R.id.foodNameTV);
-            foodPriceTV = itemView.findViewById(R.id.prizeTv);
+            foodPriceTV = itemView.findViewById(R.id.priceTv);
             foodImage = itemView.findViewById(R.id.popularFoodImage);
             layoutItem = itemView.findViewById(R.id.layout_item);
         }
-    }
-    public static String numberCurrencyFormat(String number) {
-        DecimalFormat decimalFormat = new DecimalFormat("###,###");
-        return decimalFormat.format(Integer.parseInt(number));
     }
 }

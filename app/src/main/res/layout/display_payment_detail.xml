@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="HardcodedText">
+
+    <TextView
+        android:id="@+id/drinkNameTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="Trà Sen Vàng"
+        android:textColor="#858585"/>
+
+    <TextView
+        android:id="@+id/drinkSizeTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:text="(S)"
+        android:textColor="#858585"/>
+
+    <TextView
+        android:id="@+id/drinkQuantityTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="x"
+        android:textColor="#858585"/>
+
+</LinearLayout>

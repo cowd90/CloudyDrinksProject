@@ -144,42 +144,49 @@ public class SignUpActivity extends AppCompatActivity {
         String conPassword = conPasswordET.getText().toString().trim();
 
         if (TextUtils.isEmpty(username)) {
+            progressBar.setVisibility(View.GONE);
             usernameET.setError("Vui lòng điền tên đăng nhập");
             usernameET.requestFocus();
             return;
         }
 
         if (TextUtils.isEmpty(phoneNumber)) {
+            progressBar.setVisibility(View.GONE);
             phoneNumberET.setError("Vui lòng nhập số điện thoại của bạn");
             phoneNumberET.requestFocus();
             return;
         }
 
         if (phoneNumber.length() < 9) {
+            progressBar.setVisibility(View.GONE);
             passwordET.setError("Số điện thoại không hợp lệ");
             passwordET.requestFocus();
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            passwordET.setError("Vui lòng xác nhận laị mật khẩu");
+            progressBar.setVisibility(View.GONE);
+            passwordET.setError("Vui lòng không để trống!");
             passwordIcon.requestFocus();
             return;
         }
 
         if (password.length() < 8) {
+            progressBar.setVisibility(View.GONE);
             passwordET.setError("Mật khẩu phải dài ít nhất 8 ký tự");
             passwordET.requestFocus();
             return;
         }
 
         if (TextUtils.isEmpty(conPassword)) {
-            conPasswordET.setError("Vui lòng xác nhận laị mật khẩu");
+            progressBar.setVisibility(View.GONE);
+            conPasswordET.setError("Vui lòng xác nhận lại mật khẩu");
             conPasswordET.requestFocus();
             return;
         }
 
         if (!conPassword.equals(password)) {
+            progressBar.setVisibility(View.GONE);
             conPasswordET.setError("Mật khẩu không trùng khớp");
             conPasswordET.requestFocus();
             return;

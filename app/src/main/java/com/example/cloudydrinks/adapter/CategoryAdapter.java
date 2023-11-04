@@ -16,6 +16,7 @@ import com.example.cloudydrinks.model.Category;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.my_interface.ICategoryClickListener;
 import com.example.cloudydrinks.my_interface.IClickItemListener;
+import com.example.cloudydrinks.utils.NumberCurrencyFormatUtil;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -48,7 +49,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
         holder.productNameTV.setText(productList.get(position).getProduct_name());
         String price = String.valueOf(productList.get(position).getProduct_price());
-        holder.productPriceTV.setText(numberCurrencyFormat(price)+"₫");
+        holder.productPriceTV.setText(NumberCurrencyFormatUtil.numberCurrencyFormat(price));
         Picasso.get().load(productList.get(position).getProduct_img_url()).into(holder.productImage);
 
         holder.layoutItem.setOnClickListener(new View.OnClickListener() {
@@ -76,9 +77,5 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             productPriceTV = itemView.findViewById(R.id.priceTv);
             productImage = itemView.findViewById(R.id.productImage);
         }
-    }
-    public static String numberCurrencyFormat(String number) {
-        DecimalFormat decimalFormat = new DecimalFormat("###,###");
-        return decimalFormat.format(Integer.parseInt(number));
     }
 }

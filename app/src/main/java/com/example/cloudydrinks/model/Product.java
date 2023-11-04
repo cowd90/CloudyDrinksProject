@@ -69,4 +69,16 @@ public class Product implements Serializable {
     public void setProduct_price(int product_price) {
         this.product_price = product_price;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "category_id=" + category_id +
+                ", product_id=" + product_id +
+                ", product_name='" + product_name + '\'' +
+                ", product_img_url='" + product_img_url + '\'' +
+                ", product_description='" + product_description + '\'' +
+                ", product_price=" + product_price +
+                '}';
+    }
 }

@@ -29,10 +29,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -175,10 +179,10 @@ public class VerifyOTP extends AppCompatActivity {
 
     private void createUser() {
         FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
-        DatabaseReference reference = rootNode.getReference("users");
+        DatabaseReference reference = rootNode.getReference("users").child(phoneNo);
 
         User newUser = new User(username, phoneNo, password);
-        reference.child(phoneNo).setValue(newUser);
+        reference.setValue(newUser);
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);

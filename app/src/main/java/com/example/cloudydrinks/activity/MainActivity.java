@@ -19,8 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.model.Category;
+import com.example.cloudydrinks.model.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
     private EditText passwordET, phoneNumberET;
     private boolean passwordShowing = false;
-    private FirebaseAuth mAuth;
     private ProgressBar progressBar;
     private MaterialButton loginBtn;
     @Override
@@ -46,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
         phoneNumberET = findViewById(R.id.phoneNumberET);
         loginBtn = findViewById(R.id.loginBtn);
         progressBar = findViewById(R.id.progressbar);
-
-        mAuth = FirebaseAuth.getInstance();
 
         phoneNumberET.addTextChangedListener(textWatcher);
         passwordET.addTextChangedListener(textWatcher);
@@ -127,19 +127,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null) {
-//            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-//            finish();
-//        } else {
-//            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//            finish();
-//        }
-//
-//    }
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -169,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean validateUsername(){
         String val = phoneNumberET.getText().toString();
         if (val.isEmpty()){
+            progressBar.setVisibility(View.GONE);
             phoneNumberET.setError("Vui lòng nhập tên đăng nhập");
             return false;
         } else {
@@ -180,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean validatePassword(){
         String val = passwordET.getText().toString();
         if (val.isEmpty()){
+            progressBar.setVisibility(View.GONE);
             passwordET.setError("Vui lòng nhập mật khẩu");
             return false;
         } else {
@@ -192,39 +181,31 @@ public class MainActivity extends AppCompatActivity {
         String userPhoneNumber = phoneNumberET.getText().toString().trim();
         String userPassword = passwordET.getText().toString().trim();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-        Query username = reference.orderByChild("phoneNumber").equalTo(userPhoneNumber);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber);
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //Check if username, email or phone number is exist in firebase database
-                if (snapshot.hasChild(userPhoneNumber)){
-                    // get password of user from firebase database and match it with user password input
-                    phoneNumberET.setError(null);
-                    String passwordFromDB = snapshot.child(userPhoneNumber).child("password").getValue(String.class);
+                //Check if phone number is exist in firebase database
+                if (snapshot.exists()){
+                    // Check password
+                    String passwordFromDB = snapshot.child("password").getValue(String.class);
 
-                    if (passwordFromDB.equals(userPassword)){
-                        phoneNumberET.setError(null);
-
-                        //Pass the data using intent
-
-                        String usernameFromDB = snapshot.child(userPhoneNumber).child("username").getValue(String.class);
+                    if (userPassword.equals(passwordFromDB)) {
 
                         progressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-
-                        intent.putExtra("username", usernameFromDB);
-
+                        intent.putExtra("userPhoneNumber", userPhoneNumber);
                         startActivity(intent);
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        passwordET.setError("Mật khẩu không đúng");
+                        passwordET.setError("Mật khẩu không chính xác");
                         passwordET.requestFocus();
                     }
+
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    phoneNumberET.setError("Tên đăng nhập không tồn tại");
+                    phoneNumberET.setError("Số điện thoại chưa đăng ký");
                     phoneNumberET.requestFocus();
                 }
             }
@@ -235,6 +216,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        username.addListenerForSingleValueEvent(valueEventListener);
+        reference.addListenerForSingleValueEvent(valueEventListener);
     }
 }
