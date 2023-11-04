@@ -18,9 +18,9 @@
 
     <item
         android:id="@+id/itNotification"
-        android:title="Đặt hàng"
+        android:title="Giao hàng"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/baseline_notifications_none_24"/>
+        android:icon="@drawable/delivery_truck"/>
 
     <item
         android:id="@+id/itProfile"

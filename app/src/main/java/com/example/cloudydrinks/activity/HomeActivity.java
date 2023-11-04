@@ -20,13 +20,12 @@ import android.os.Looper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.BannerAdapter;
 import com.example.cloudydrinks.adapter.CategoryIconAdapter;
 import com.example.cloudydrinks.adapter.PopularArticleAdapter;
-import com.example.cloudydrinks.fragment.NotificationFragment;
+import com.example.cloudydrinks.fragment.DeliveryFragment;
 import com.example.cloudydrinks.fragment.FavoriteFragment;
 import com.example.cloudydrinks.fragment.HomeFragment;
 import com.example.cloudydrinks.fragment.MyBottomSheetFragment;
@@ -38,8 +37,6 @@ import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.my_interface.ICategoryClickListener;
 import com.example.cloudydrinks.my_interface.IClickItemListener;
 import com.example.cloudydrinks.utils.TranslateAnimation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
@@ -81,7 +78,7 @@ public class HomeActivity extends AppCompatActivity {
     private int countFavorite;
     private Fragment homeFragment = new HomeFragment();
     private Fragment favFragment = new FavoriteFragment();
-    private Fragment notificationFragment = new NotificationFragment();
+    private Fragment notificationFragment = new DeliveryFragment();
     private Fragment profileFragment = new ProfileFragment();
     @SuppressLint("MissingInflatedId")
     @Override

@@ -80,9 +80,35 @@ public class PaymentActivity extends AppCompatActivity {
     public View.OnClickListener orderClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            addToOrder();
+//            startActivity(new Intent(PaymentActivity.this, HomeActivity.class));
         }
     };
+    public void addToOrder() {
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.hasChild("Cart")) {
+                    for (DataSnapshot dataSnapshot : snapshot.child("Cart").getChildren()) {
+                        CartModel cartModel = dataSnapshot.getValue(CartModel.class);
+                        cartList.add(cartModel);
+                        databaseReference.child("Cart").removeValue();
+                    }
+                    for (CartModel model : cartList) {
+                        databaseReference.child("order").child("delivering").child(model.getProduct_name()+"_"+model.getSize()).setValue(model);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     private void generatePaymentDetail() {
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(PaymentActivity.this);
