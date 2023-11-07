@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.AddressActivity"
-    tools:ignore="HardcodedText">
+    tools:ignore="HardcodedText"
+    android:background="#EFEFEF">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -120,7 +121,9 @@
                     android:id="@+id/district"
                     android:layout_marginTop="10dp"
                     android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/border"/>
+                    android:background="@drawable/border"
+                    android:paddingStart="15dp"
+                    tools:ignore="RtlSymmetry"/>
 
                 <Spinner
                     android:layout_width="match_parent"
@@ -129,7 +132,9 @@
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/border"/>
+                    android:background="@drawable/border"
+                    android:paddingStart="15dp"
+                    tools:ignore="RtlSymmetry"/>
 
                 <EditText
                     android:id="@+id/streetET"
@@ -152,13 +157,23 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/deleteAddressBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cornerRadius="0dp"
+                android:backgroundTint="@color/white"
+                android:textColor="#BA704F"
+                android:text="Xóa địa chỉ"
+                android:layout_marginTop="30dp"/>
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/submitBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cornerRadius="0dp"
                 android:enabled="false"
                 android:text="HOÀN THÀNH"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="10dp"/>
 
         </LinearLayout>
 

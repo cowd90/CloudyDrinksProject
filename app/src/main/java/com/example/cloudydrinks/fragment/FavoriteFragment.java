@@ -35,7 +35,6 @@ public class FavoriteFragment extends Fragment {
     private ProductListAdapter adapter;
     private DatabaseReference databaseReference;
     private String myKey;
-    private String path = "Wishlist";
     public FavoriteFragment() {
         // Required empty public constructor
     }

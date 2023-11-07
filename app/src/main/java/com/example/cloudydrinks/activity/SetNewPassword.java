@@ -52,7 +52,7 @@ public class SetNewPassword extends AppCompatActivity {
                     FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
                     DatabaseReference reference = rootNode.getReference("users");
 
-                    reference.child(phoneNo).child("password").setValue(newPassword);
+                    reference.child(phoneNo).child("user_info").child("password").setValue(newPassword);
 
                     Toast.makeText(SetNewPassword.this, "Cập nhật mật khẩu thành công!", Toast.LENGTH_SHORT).show();
 

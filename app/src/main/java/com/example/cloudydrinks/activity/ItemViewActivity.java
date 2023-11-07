@@ -44,6 +44,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ItemViewActivity extends AppCompatActivity {
     private ImageView productImage, plusBtn, minusBtn;
@@ -61,6 +62,7 @@ public class ItemViewActivity extends AppCompatActivity {
     private String sizeTxt;
     private String userPhoneNumber;
     private CheckBox favoriteCheckbox;
+    private ArrayList<Product> favList;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -130,6 +132,9 @@ public class ItemViewActivity extends AppCompatActivity {
         }
 
         product = (Product) bundle.get("product object");
+
+        setFavoriteCheckbox(product);
+
         // price of product
         price = product.getProduct_price();
 
@@ -155,43 +160,7 @@ public class ItemViewActivity extends AppCompatActivity {
 
         addToCartBtn.setOnClickListener(addToCartOnClickListener);
 
-        favoriteCheckbox.setOnCheckedChangeListener(addToFavoriteListListener);
-
     }
-    public CompoundButton.OnCheckedChangeListener addToFavoriteListListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            String path = product.getProduct_name();
-
-            DatabaseReference wishList = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber);
-            wishList.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    if (buttonView.isChecked()) {
-                        wishList.child("wishlist").child(path).setValue(product).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(ItemViewActivity.this, "Đã thêm vào danh sách yêu thích!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    } else {
-                        wishList.child("wishlist").child(path).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(ItemViewActivity.this, "Đã xóa khỏi danh sách yêu thích!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-    };
 
     public View.OnClickListener addToCartOnClickListener = new View.OnClickListener() {
         @Override
@@ -414,5 +383,55 @@ public class ItemViewActivity extends AppCompatActivity {
             }
         }
 
+    }
+    public void setFavoriteCheckbox(Product product) {
+        DatabaseReference wishlistRef = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("wishlist").child(product.getProduct_name());
+        wishlistRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Product item = snapshot.getValue(Product.class);
+                    favoriteCheckbox.setChecked(product.getProduct_name().equals(item.getProduct_name()));
+                } else {
+                    databaseReference.removeEventListener(this);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    public void onItemClick(View view) {
+        CheckBox checkBox = (CheckBox)view;
+        if(checkBox.isChecked()){
+            addToFavorite(product);
+        } else {
+            removeFromFavorite(product);
+        }
+    }
+
+    private void removeFromFavorite(Product product) {
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("wishlist").child(product.getProduct_name());
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Product item = snapshot.getValue(Product.class);
+                if (Objects.equals(Objects.requireNonNull(item).getProduct_name(), product.getProduct_name())) {
+                    databaseReference.removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void addToFavorite(Product product) {
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("wishlist");
+        databaseReference.child(product.getProduct_name()).setValue(product);
     }
 }

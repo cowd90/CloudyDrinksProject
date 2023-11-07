@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.adapter.DeliveringItemAdapter;
 import com.example.cloudydrinks.adapter.ReiceivedAndCancelAdapter;
 import com.example.cloudydrinks.model.Order;
 import com.google.firebase.database.DataSnapshot;
@@ -27,14 +26,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class DeliveredFragment extends Fragment {
+public class CancelOrderFragment extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<Order> orderList;
     private Order order;
     private DatabaseReference databaseReference;
     private ReiceivedAndCancelAdapter adapter;
     private String userid;
-    public DeliveredFragment() {
+    public CancelOrderFragment() {
         // Required empty public constructor
     }
 
@@ -42,17 +41,16 @@ public class DeliveredFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View mView = inflater.inflate(R.layout.fragment_delivered, container, false);
+        View mView = inflater.inflate(R.layout.fragment_cancel_order, container, false);
 
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView = mView.findViewById(R.id.deliveredRV);
+        recyclerView = mView.findViewById(R.id.cancelRV);
         recyclerView.setLayoutManager(gridLayoutManager);
 
         generateList();
 
         return mView;
     }
-
     public void generateList() {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -62,7 +60,7 @@ public class DeliveredFragment extends Fragment {
 
         orderList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order").child("status_delivered");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order").child("status_cancel");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override

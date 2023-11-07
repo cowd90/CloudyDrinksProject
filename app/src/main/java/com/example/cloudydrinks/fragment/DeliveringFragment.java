@@ -1,16 +1,55 @@
 package com.example.cloudydrinks.fragment;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
-public class DeliveringFragment extends Fragment {
+import com.example.cloudydrinks.activity.AddressActivity;
+import com.example.cloudydrinks.activity.AddressSelection;
+import com.example.cloudydrinks.activity.PaymentActivity;
+import com.example.cloudydrinks.adapter.AddressAdapter;
+import com.example.cloudydrinks.adapter.DeliveringItemAdapter;
+import com.example.cloudydrinks.adapter.ProductListAdapter;
+import com.example.cloudydrinks.model.CartModel;
+import com.example.cloudydrinks.model.Contact;
+import com.example.cloudydrinks.model.Order;
+import com.example.cloudydrinks.model.Product;
+import com.example.cloudydrinks.my_interface.IClickItemListener;
+import com.example.cloudydrinks.my_interface.IOrderClickListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
+public class DeliveringFragment extends Fragment {
+    private RecyclerView deliveringStatusRV;
+    private ArrayList<Order> orderList;
+    private Order order;
+    private DatabaseReference databaseReference;
+    private DeliveringItemAdapter adapter;
+    private String userid;
     public DeliveringFragment() {
         // Required empty public constructor
     }
@@ -19,6 +58,129 @@ public class DeliveringFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_delivering, container, false);
+        View mView = inflater.inflate(R.layout.fragment_delivering, container, false);
+
+        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        deliveringStatusRV = mView.findViewById(R.id.deliveringRV);
+        deliveringStatusRV.setLayoutManager(gridLayoutManager);
+
+        generateList();
+
+        return mView;
+    }
+
+    public void generateList() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        userid = preferences.getString("userid", null);
+
+        Log.d("phone number", userid);
+
+        orderList = new ArrayList<>();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order").child("status_delivering");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                orderList.clear();
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        order = dataSnapshot.getValue(Order.class);
+                        orderList.add(order);
+                    }
+                } else {
+                    deliveringStatusRV.setVisibility(View.GONE);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        adapter = new DeliveringItemAdapter(orderList, onCancelListener, onReceivedListener);
+        deliveringStatusRV.setAdapter(adapter);
+
+    }
+
+    public IOrderClickListener onCancelListener = new IOrderClickListener() {
+        @Override
+        public void onOrderClickListener(Order order) {
+            onCancel(order);
+        }
+    };
+    public IOrderClickListener onReceivedListener = new IOrderClickListener() {
+        @Override
+        public void onOrderClickListener(Order order) {
+            onReceived(order);
+        }
+    };
+
+    public void onCancel(Order order) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage("Đơn hàng của bạn sẽ bị hủy. Bạn có chắc chắn muốn hủy đơn hàng?")
+                .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String path = order.getProduct_name() + "_" + order.getSize();
+
+                        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order");
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                // remove from delivering status
+                                databaseReference.child("status_delivering").child(path).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(getActivity(), "Hủy thành công", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                // add drink to cancel fragment
+                                databaseReference.child("status_cancel").child(path).setValue(order);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("Không phải bây giờ", null).show();
+    }
+    public void onReceived(Order order) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage("Đã nhận được đơn hàng?")
+                .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String path = order.getProduct_name() + "_" + order.getSize();
+
+                        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order");
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                // remove from delivering status
+                                databaseReference.child("status_delivering").child(path).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(getActivity(), "Đã nhận được sản phẩm", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                // add drink to cancel fragment
+                                databaseReference.child("status_delivered").child(path).setValue(order);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("Hủy", null).show();
     }
 }

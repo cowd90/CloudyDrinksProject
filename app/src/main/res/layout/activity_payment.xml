@@ -66,13 +66,13 @@
                         android:id="@+id/addAddressImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/baseline_add_circle_outline_24"/>
+                        android:src="@drawable/house_icon"/>
 
                     <TextView
                         android:id="@+id/addressTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Thêm địa chỉ"
+                        android:text="Chọn địa chỉ"
                         android:textSize="14sp"
                         android:textColor="#858585"
                         android:layout_marginStart="5dp"/>

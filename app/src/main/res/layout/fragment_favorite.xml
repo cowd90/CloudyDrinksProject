@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".fragment.FavoriteFragment"
     android:background="@color/white"
-    tools:ignore="HardcodedText">
+    tools:ignore="HardcodedText"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"

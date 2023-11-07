@@ -3,27 +3,27 @@ package com.example.cloudydrinks.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.PaymentDetailAdapter;
-import com.example.cloudydrinks.adapter.PopularArticleAdapter;
 import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Contact;
-import com.example.cloudydrinks.model.Product;
-import com.example.cloudydrinks.my_interface.IClickItemListener;
+import com.example.cloudydrinks.model.Order;
 import com.example.cloudydrinks.utils.NumberCurrencyFormatUtil;
+import com.example.cloudydrinks.utils.RandomKey;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +52,7 @@ public class PaymentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_payment);
 
         userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
+
         totalPriceTV = findViewById(R.id.totalPriceTV);
         addressLayout = findViewById(R.id.addressLayout);
         orderBtn = findViewById(R.id.orderBtn);
@@ -69,6 +70,13 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            return;
+        }
+
+        contact = (Contact) bundle.get("contactObj");
+
         addressLayout.setOnClickListener(addAddressListener);
 
         loadAddress();
@@ -81,7 +89,13 @@ public class PaymentActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             addToOrder();
-//            startActivity(new Intent(PaymentActivity.this, HomeActivity.class));
+            if (!addressTV.getText().toString().trim().equals("Chọn địa chỉ")) {
+                Intent intent = new Intent(PaymentActivity.this, HomeActivity.class);
+                intent.putExtra("userPhoneNumber", userPhoneNumber);
+                startActivity(intent);
+            } else {
+                Toast.makeText(PaymentActivity.this, "Vui lòng chọn địa chỉ nhận hàng", Toast.LENGTH_SHORT).show();
+            }
         }
     };
     public void addToOrder() {
@@ -91,15 +105,32 @@ public class PaymentActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.hasChild("Cart")) {
+                    cartList.clear();
                     for (DataSnapshot dataSnapshot : snapshot.child("Cart").getChildren()) {
                         CartModel cartModel = dataSnapshot.getValue(CartModel.class);
                         cartList.add(cartModel);
                         databaseReference.child("Cart").removeValue();
                     }
+
                     for (CartModel model : cartList) {
-                        databaseReference.child("order").child("delivering").child(model.getProduct_name()+"_"+model.getSize()).setValue(model);
+                        Order order = new Order();
+                        order.setProduct_id(model.getProduct_id());
+                        order.setProduct_name(model.getProduct_name());
+                        order.setQuantity(model.getQuantity());
+                        order.setSize(model.getSize());
+                        order.setProduct_price(model.getProduct_price());
+                        order.setTotalPrice(model.getTotalPrice());
+                        order.setContact(contact);
+                        databaseReference.child("order").child("status_delivering").child(model.getProduct_name()+"_"+model.getSize()).setValue(order).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(PaymentActivity.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        });
                     }
                 }
+                databaseReference.removeEventListener(this);
                 adapter.notifyDataSetChanged();
             }
 
@@ -143,10 +174,10 @@ public class PaymentActivity extends AppCompatActivity {
         adapter = new PaymentDetailAdapter(cartList);
         paymentRecyclerView.setAdapter(adapter);
     }
-    private View.OnClickListener addAddressListener = new View.OnClickListener() {
+    private final View.OnClickListener addAddressListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(PaymentActivity.this, AddressActivity.class);
+            Intent intent = new Intent(PaymentActivity.this, AddressSelection.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable("contactObj", contact);
             intent.putExtras(bundle);
@@ -155,31 +186,17 @@ public class PaymentActivity extends AppCompatActivity {
         }
     };
     private void loadAddress() {
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("contact_address");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-                    contact = snapshot.getValue(Contact.class);
-                    contactAddress = contact.getFullName() + " - " + contact.getPhoneNo() + "\n"
-                            + contact.getStreet() + ", " + contact.getWard() + ", "
-                            + contact.getDistrict() + ", " + contact.getCity();
-                    addressTV.setText(contactAddress);
-                    addAddressImage.setVisibility(View.GONE);
-                } else {
-                    contactAddress = "Thêm địa chỉ";
-                    addressTV.setText(contactAddress);
-                    addAddressImage.setVisibility(View.VISIBLE);
+        if (contact != null) {
+            contactAddress = contact.getFullName() + " - " + contact.getPhoneNo() + "\n"
+                    + contact.getStreet() + ", " + contact.getWard() + ", "
+                    + contact.getDistrict() + ", " + contact.getCity();
+            addressTV.setText(contactAddress);
+            addAddressImage.setVisibility(View.GONE);
+        }else {
+            contactAddress = "Thêm địa chỉ";
+            addressTV.setText(contactAddress);
+            addAddressImage.setVisibility(View.VISIBLE);
+        }
 
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 }

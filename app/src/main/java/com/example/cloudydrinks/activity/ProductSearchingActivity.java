@@ -54,9 +54,7 @@ public class ProductSearchingActivity extends AppCompatActivity {
         cancelSearchingTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProductSearchingActivity.this, HomeActivity.class);
-                intent.putExtra("userPhoneNumber", userPhoneNumber);
-                startActivity(intent);
+                finish();
             }
         });
     }

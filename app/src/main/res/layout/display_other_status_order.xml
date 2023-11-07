@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="HardcodedText"
+    android:orientation="vertical"
+    android:paddingVertical="20dp"
+    android:layout_marginHorizontal="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="9"
+            android:layout_marginStart="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/orderItemNameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bạc Xỉu Nóng"
+                    android:textStyle="bold"
+                    android:textColor="#5A5A5A"
+                    android:textSize="16sp"
+                    android:layout_weight="4"/>
+
+                <TextView
+                    android:id="@+id/orderItemSizeTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(L)"
+                    android:textColor="#858585"
+                    android:textStyle="italic"
+                    android:textSize="14sp"
+                    android:layout_weight="3"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/orderItemQuantityTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="x10"
+                    android:textColor="#858585"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/customerInfoTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Scott Nguyễn - 0947135695"
+                android:textColor="#858585"
+                android:textStyle="italic"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:id="@+id/deliveringAddressTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chung cư Phú Lợi D2, Phường 7, Quận 8, TP Hồ Chí Minh"
+                android:textStyle="italic"
+                android:textColor="#858585"
+                android:layout_marginEnd="10dp"/>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thành tiền: "
+                    android:layout_gravity="end"
+                    android:textStyle="bold"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/orderItemPriceTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="200.000đ"
+                    android:textColor="#C38154"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="end"
+                    android:textSize="14sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#E1E1E1"/>
+
+</LinearLayout>

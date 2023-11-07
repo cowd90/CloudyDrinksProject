@@ -19,16 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.model.Category;
-import com.example.cloudydrinks.model.User;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -181,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         String userPhoneNumber = phoneNumberET.getText().toString().trim();
         String userPassword = passwordET.getText().toString().trim();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("user_info");
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override

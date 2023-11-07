@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.cloudydrinks.fragment.CancleOrderFragment;
+import com.example.cloudydrinks.fragment.CancelOrderFragment;
 import com.example.cloudydrinks.fragment.DeliveredFragment;
 import com.example.cloudydrinks.fragment.DeliveringFragment;
 
@@ -23,7 +23,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 1:
                 return new DeliveredFragment();
             case 2:
-                return new CancleOrderFragment();
+                return new CancelOrderFragment();
             default:
                 return new DeliveringFragment();
         }

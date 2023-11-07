@@ -2,7 +2,6 @@ package com.example.cloudydrinks.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,20 +10,26 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
+import com.andremion.counterfab.CounterFab;
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.BannerAdapter;
 import com.example.cloudydrinks.adapter.CategoryIconAdapter;
 import com.example.cloudydrinks.adapter.PopularArticleAdapter;
+import com.example.cloudydrinks.adapter.ViewPagerAdapter;
+import com.example.cloudydrinks.fragment.DeliveringFragment;
 import com.example.cloudydrinks.fragment.DeliveryFragment;
 import com.example.cloudydrinks.fragment.FavoriteFragment;
 import com.example.cloudydrinks.fragment.HomeFragment;
@@ -41,12 +46,10 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -59,80 +62,78 @@ import me.relex.circleindicator.CircleIndicator;
 public class HomeActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapterCategory, adapterPopular;
     private DatabaseReference databaseReference;
-    private RecyclerView recyclerViewCategoryList, recyclerViewPopularList;
-    private MaterialButton productSearchingBtn;
     private ArrayList<Product> popularProductList;
-    private FirebaseAuth mAuth;
     private ArrayList<Category> categoryList;
     private ViewPager viewPager;
     private CircleIndicator circleIndicator;
     private BannerAdapter bannerAdapter;
     private List<Banner> bannerList;
     private Timer mTimmer;
-    private BottomNavigationView bottomNavigation;
-    private CardView floatingCardView;
-    private TextView countCartTV;
+    private CounterFab fab;
     private ArrayList<CartModel> cartList;
     private String userPhoneNumber;
     private BadgeDrawable badgeDrawable;
     private int countFavorite;
-    private Fragment homeFragment = new HomeFragment();
-    private Fragment favFragment = new FavoriteFragment();
-    private Fragment notificationFragment = new DeliveryFragment();
-    private Fragment profileFragment = new ProfileFragment();
-    @SuppressLint("MissingInflatedId")
+    private final Fragment homeFragment = new HomeFragment();
+    private final Fragment favFragment = new FavoriteFragment();
+    private final Fragment deliveryFragment = new DeliveryFragment();
+    private final Fragment profileFragment = new ProfileFragment();
+    public static final String PREFERENCE_USERID = "com.example.cloudydrinks";
+    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mAuth = FirebaseAuth.getInstance();
-
-        productSearchingBtn = findViewById(R.id.productSearchingBtn);
+        MaterialButton productSearchingBtn = findViewById(R.id.productSearchingBtn);
         viewPager = findViewById(R.id.viewPager);
         circleIndicator = findViewById(R.id.circle_indicator);
-        bottomNavigation = findViewById(R.id.bottomNav);
-        floatingCardView = findViewById(R.id.floating_cardview);
-        countCartTV = findViewById(R.id.count_cart);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNav);
+        fab = findViewById(R.id.fab);
 
         badgeDrawable = bottomNavigation.getOrCreateBadge(R.id.itFavorite);
 
         loadFragment(homeFragment);
+        bottomNavigation.getMenu().findItem(R.id.itHome).setChecked(true);
 
         // Get user phone number
         userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
+
+        // Save user id to shared preferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("userid", userPhoneNumber);
+        editor.apply();
 
         // pass current user to favorite fragment
         Bundle data = new Bundle();
         data.putString("userPhoneNo", userPhoneNumber);
         favFragment.setArguments(data);
+        profileFragment.setArguments(data);
 
         // Get data from firebase
         cartList = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("Cart");
-        Query query = databaseReference.orderByPriority();
-        query.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-                    cartList.clear();
+                cartList.clear();
+                if (snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         CartModel cartModel = dataSnapshot.getValue(CartModel.class);
                         cartList.add(cartModel);
                     }
-                    // set number of quantity for cart
                     setCartItemQuantity(cartList);
-
-                    // Open the cart
-                    floatingCardView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            openBottomSheetFragment(cartList);
-                        }
-                    });
-
+                } else {
+                    setCartItemQuantity(cartList);
                 }
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openBottomSheetFragment(cartList);
+                    }
+                });
             }
 
             @Override
@@ -140,15 +141,15 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        // Hide/show floating action button when scroll
+//         Hide/show floating action button when scroll
         NestedScrollView nsv = findViewById(R.id.nestedScroll);
         nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+            public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY > oldScrollY) {
-                    floatingCardView.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
                 } else {
-                    floatingCardView.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -175,16 +176,16 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.itHome) {
-                    floatingCardView.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
                     loadFragment(homeFragment);
                 } else if (item.getItemId() == R.id.itFavorite) {
-                    floatingCardView.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
                     loadFragment(favFragment);
                 } else if (item.getItemId() == R.id.itNotification) {
-                    floatingCardView.setVisibility(View.GONE);
-                    loadFragment(notificationFragment);
+                    fab.setVisibility(View.GONE);
+                    loadFragment(deliveryFragment);
                 } else if (item.getItemId() == R.id.itProfile) {
-                    floatingCardView.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
                     loadFragment(profileFragment);
                 }
 
@@ -202,9 +203,9 @@ public class HomeActivity extends AppCompatActivity {
     }
     private void setCartItemQuantity(ArrayList<CartModel> cartList) {
         if (cartList == null) {
-            countCartTV.setText("0");
+            fab.setCount(0);
         } else {
-            countCartTV.setText(String.valueOf(cartList.size()));
+            fab.setCount(cartList.size());
         }
     }
 
@@ -286,7 +287,7 @@ public class HomeActivity extends AppCompatActivity {
     }
     private void recyclerViewCategory() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewCategoryList = findViewById(R.id.categoryRV);
+        RecyclerView recyclerViewCategoryList = findViewById(R.id.categoryRV);
         recyclerViewCategoryList.setLayoutManager(linearLayoutManager);
         recyclerViewCategoryList.setFocusable(false);
         recyclerViewCategoryList.setNestedScrollingEnabled(false);
@@ -330,7 +331,7 @@ public class HomeActivity extends AppCompatActivity {
     }
     private void recyclerViewPopular() {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(HomeActivity.this, 2, GridLayoutManager.VERTICAL, false);
-        recyclerViewPopularList = findViewById(R.id.popularFoodRV);
+        RecyclerView recyclerViewPopularList = findViewById(R.id.popularFoodRV);
         recyclerViewPopularList.setLayoutManager(gridLayoutManager);
         recyclerViewPopularList.setFocusable(false);
         recyclerViewPopularList.setNestedScrollingEnabled(false);
@@ -376,7 +377,7 @@ public class HomeActivity extends AppCompatActivity {
     private void loadFavoriteQuantityItem() {
         countFavorite = 0;
         DatabaseReference wishList = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("wishlist");
-        wishList.addListenerForSingleValueEvent(new ValueEventListener() {
+        wishList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {

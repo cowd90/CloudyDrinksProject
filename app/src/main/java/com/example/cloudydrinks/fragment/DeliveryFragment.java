@@ -40,7 +40,7 @@ public class DeliveryFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_delivery, container, false);
 
         tabLayout = mView.findViewById(R.id.tabLayout);
-        viewPager2 = mView.findViewById(R.id.viewPager);
+        viewPager2 = mView.findViewById(R.id.viewPager2);
 
         viewPagerAdapter = new ViewPagerAdapter(getActivity());
         viewPager2.setAdapter(viewPagerAdapter);

@@ -7,25 +7,21 @@
     <item
         android:id="@+id/itHome"
         android:title="Trang chủ"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/baseline_home_24"/>
 
     <item
         android:id="@+id/itFavorite"
         android:title="Yêu thích"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_heart_outline"/>
 
     <item
         android:id="@+id/itNotification"
         android:title="Giao hàng"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/delivery_truck"/>
 
     <item
         android:id="@+id/itProfile"
         android:title="Tôi"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/person_outline"/>
 
 </menu>

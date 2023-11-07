@@ -179,7 +179,7 @@ public class VerifyOTP extends AppCompatActivity {
 
     private void createUser() {
         FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
-        DatabaseReference reference = rootNode.getReference("users").child(phoneNo);
+        DatabaseReference reference = rootNode.getReference("users").child(phoneNo).child("user_info");
 
         User newUser = new User(username, phoneNo, password);
         reference.setValue(newUser);
@@ -322,14 +322,4 @@ public class VerifyOTP extends AppCompatActivity {
             }
         });
     }
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        FirebaseUser curreUser = FirebaseAuth.getInstance().getCurrentUser();
-//        if (curreUser != null) {
-//            startActivity(new Intent(getApplicationContext(), SignUpPasswordActivity.class));
-//            finish();
-//        }
-//    }
 }

@@ -67,8 +67,7 @@
                                 android:layout_height="30dp"
                                 android:layout_weight="1"
                                 android:button="@drawable/favorite_selector"
-                                android:clickable="true"
-                                android:focusable="true"/>
+                                android:onClick="onItemClick"/>
 
                         </LinearLayout>
 

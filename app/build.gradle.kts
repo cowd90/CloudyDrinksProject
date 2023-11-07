@@ -51,4 +51,7 @@ dependencies {
     implementation("me.relex:circleindicator:2.1.6")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("com.google.android.gms:play-services-safetynet:18.0.1")
+    implementation("com.github.andremion:counterfab:1.2.2")
+
 }

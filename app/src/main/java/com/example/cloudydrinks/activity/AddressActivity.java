@@ -1,6 +1,7 @@
 package com.example.cloudydrinks.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -10,6 +11,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,6 +25,7 @@ import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Contact;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.utils.NumberCurrencyFormatUtil;
+import com.example.cloudydrinks.utils.RandomKey;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -32,7 +35,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.LongFunction;
 
 public class AddressActivity extends AppCompatActivity {
     private String selectedDistrict, selectedWard;
@@ -42,8 +48,9 @@ public class AddressActivity extends AppCompatActivity {
     private EditText fullNameET, phoneNumberET, streetET;
     private String userPhoneNumber;
     private DatabaseReference databaseReference;
-    private Contact contact;
+    private Contact address;
     private String fullName, phoneNo, district, ward, street;
+    private String addressId;
     private int wardPosition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +72,7 @@ public class AddressActivity extends AppCompatActivity {
             return;
         }
 
-        contact = (Contact) bundle.get("contactObj");
+        address = (Contact) bundle.get("contactObj");
 
         districtAdapter = ArrayAdapter.createFromResource(this, R.array.district_arr, R.layout.spinner_layout);
         districtAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
@@ -205,12 +212,12 @@ public class AddressActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(onSubmitListener);
     }
     public void loadAddressData() {
-        if (contact != null) {
-            fullName = contact.getFullName();
-            phoneNo = contact.getPhoneNo();
-            district = contact.getDistrict();
-            ward = contact.getWard();
-            street = contact.getStreet();
+        if (address != null) {
+            fullName = address.getFullName();
+            phoneNo = address.getPhoneNo();
+            district = address.getDistrict();
+            ward = address.getWard();
+            street = address.getStreet();
 
             getWardAdapterResource();
 
@@ -344,27 +351,59 @@ public class AddressActivity extends AppCompatActivity {
         });
     }
     public void createOrUpdateAddress() {
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber);
+        addressId = RandomKey.generateKey();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("contact_address");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Contact contact = new Contact();
-                contact.setFullName(fullNameET.getText().toString().trim());
-                contact.setPhoneNo(phoneNumberET.getText().toString().trim());
-                contact.setStreet(streetET.getText().toString().trim());
-                contact.setCity("TP Hồ Chí Minh");
-                contact.setDistrict(selectedDistrict);
-                contact.setWard(selectedWard);
-                databaseReference.child("contact_address").setValue(contact).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(AddressActivity.this, "Thêm địa chỉ thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(AddressActivity.this, PaymentActivity.class);
-                        intent.putExtra("userPhoneNumber", userPhoneNumber);
-                        startActivity(intent);
+                if (address != null) {
+                    String path = address.getAddressId();
+
+                    if (snapshot.hasChild(path)) { // update address
+                        Contact contact = snapshot.child(path).getValue(Contact.class);
+                        contact.setAddressId(address.getAddressId());
+                        contact.setFullName(fullNameET.getText().toString().trim());
+                        contact.setPhoneNo(phoneNumberET.getText().toString().trim());
+                        contact.setStreet(streetET.getText().toString().trim());
+                        contact.setCity("TP Hồ Chí Minh");
+                        contact.setDistrict(selectedDistrict);
+                        contact.setWard(selectedWard);
+
+                        databaseReference.child(path).setValue(contact).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(AddressActivity.this, "Cập nhật chỉ thành công", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(AddressActivity.this, AddressSelection.class);
+                                intent.putExtra("userPhoneNumber", userPhoneNumber);
+                                intent.putExtra("addressId", address.getAddressId());
+                                startActivity(intent);
+                            }
+                        });
                     }
-                });
+                } else { // add new address
+                    Contact contact = new Contact();
+                    contact.setAddressId(addressId);
+                    contact.setFullName(fullNameET.getText().toString().trim());
+                    contact.setPhoneNo(phoneNumberET.getText().toString().trim());
+                    contact.setStreet(streetET.getText().toString().trim());
+                    contact.setCity("TP Hồ Chí Minh");
+                    contact.setDistrict(selectedDistrict);
+                    contact.setWard(selectedWard);
+
+                    databaseReference.child(addressId).setValue(contact).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(AddressActivity.this, "Thêm địa chỉ thành công", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(AddressActivity.this, AddressSelection.class);
+                            intent.putExtra("userPhoneNumber", userPhoneNumber);
+                            intent.putExtra("addressId", addressId);
+                            startActivity(intent);
+                        }
+                    });
+                }
+
             }
 
             @Override

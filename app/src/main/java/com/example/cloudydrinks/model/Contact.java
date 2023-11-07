@@ -3,18 +3,27 @@ package com.example.cloudydrinks.model;
 import java.io.Serializable;
 
 public class Contact implements Serializable {
-    private String fullName, phoneNo, city, district, ward, street;
+    private String addressId, fullName, phoneNo, city, district, ward, street;
 
     public Contact() {
     }
 
-    public Contact(String fullName, String phoneNo, String city, String district, String ward, String street) {
+    public Contact(String addressId, String fullName, String phoneNo, String city, String district, String ward, String street) {
+        this.addressId = addressId;
         this.fullName = fullName;
         this.phoneNo = phoneNo;
         this.city = city;
         this.district = district;
         this.ward = ward;
         this.street = street;
+    }
+
+    public String getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
     }
 
     public String getFullName() {
@@ -68,7 +77,8 @@ public class Contact implements Serializable {
     @Override
     public String toString() {
         return "Contact{" +
-                "fullName='" + fullName + '\'' +
+                "addressId='" + addressId + '\'' +
+                ", fullName='" + fullName + '\'' +
                 ", phoneNo='" + phoneNo + '\'' +
                 ", city='" + city + '\'' +
                 ", district='" + district + '\'' +
