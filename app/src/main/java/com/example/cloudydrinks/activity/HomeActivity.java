@@ -375,11 +375,11 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
     private void loadFavoriteQuantityItem() {
-        countFavorite = 0;
         DatabaseReference wishList = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("wishlist");
         wishList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                countFavorite = 0;
                 if (snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         countFavorite++;

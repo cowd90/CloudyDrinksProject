@@ -10,7 +10,7 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/foodImage"
+        android:id="@+id/productImage"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
@@ -33,7 +33,7 @@
             tools:ignore="NestedWeights">
 
             <TextView
-                android:id="@+id/searchFoodNameTV"
+                android:id="@+id/searchProductNameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trà Đào Cam Sả - Đá"
@@ -42,7 +42,7 @@
                 android:letterSpacing="0.02"/>
 
             <TextView
-                android:id="@+id/foodPriceTV"
+                android:id="@+id/productPriceTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="25.000đ"

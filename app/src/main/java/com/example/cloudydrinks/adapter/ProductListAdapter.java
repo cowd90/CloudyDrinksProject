@@ -56,10 +56,10 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             return;
         }
 
-        holder.foodNameTV.setText(productList.get(position).getProduct_name());
+        holder.productNameTV.setText(productList.get(position).getProduct_name());
         String price = String.valueOf(productList.get(position).getProduct_price());
-        holder.foodPriceTV.setText(NumberCurrencyFormatUtil.numberCurrencyFormat(price));
-        Picasso.get().load(productList.get(position).getProduct_img_url()).into(holder.foodImage);
+        holder.productPriceTV.setText(NumberCurrencyFormatUtil.numberCurrencyFormat(price));
+        Picasso.get().load(productList.get(position).getProduct_img_url()).into(holder.productImage);
 
         holder.layoutItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,15 +75,15 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView foodNameTV, foodPriceTV;
-        ImageView foodImage;
+        TextView productNameTV, productPriceTV;
+        ImageView productImage;
         LinearLayout layoutItem;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             layoutItem = itemView.findViewById(R.id.layout_item);
-            foodNameTV = itemView.findViewById(R.id.searchFoodNameTV);
-            foodPriceTV = itemView.findViewById(R.id.foodPriceTV);
-            foodImage = itemView.findViewById(R.id.foodImage);
+            productNameTV = itemView.findViewById(R.id.searchProductNameTV);
+            productPriceTV = itemView.findViewById(R.id.productPriceTV);
+            productImage = itemView.findViewById(R.id.productImage);
         }
     }
 

@@ -2,10 +2,12 @@ package com.example.cloudydrinks.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,14 +15,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.activity.ItemViewActivity;
 import com.example.cloudydrinks.activity.ProductSearchingActivity;
+import com.example.cloudydrinks.adapter.FavoriteListAdapter;
 import com.example.cloudydrinks.adapter.ProductListAdapter;
+import com.example.cloudydrinks.adapter.RecyclerViewItemTouchHelper;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.my_interface.IClickItemListener;
+import com.example.cloudydrinks.my_interface.ItemTouchHelperListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,13 +35,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class FavoriteFragment extends Fragment {
+public class FavoriteFragment extends Fragment implements ItemTouchHelperListener{
     private ArrayList<Product> productList;
     private RecyclerView favRecyclerview;
-    private ProductListAdapter adapter;
+    private FavoriteListAdapter adapter;
     private DatabaseReference databaseReference;
     private String myKey;
+    private FrameLayout rootView;
     public FavoriteFragment() {
         // Required empty public constructor
     }
@@ -45,12 +54,17 @@ public class FavoriteFragment extends Fragment {
         // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.fragment_favorite, container, false);
 
+        rootView = mView.findViewById(R.id.root_view);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         favRecyclerview = mView.findViewById(R.id.favListRV);
         favRecyclerview.setLayoutManager(linearLayoutManager);
 
         generateDrinkList();
         favRecyclerview.setAdapter(adapter);
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new RecyclerViewItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(favRecyclerview);
 
         return mView;
     }
@@ -72,7 +86,6 @@ public class FavoriteFragment extends Fragment {
                     productList.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         Product product = dataSnapshot.getValue(Product.class);
-                        Log.d("drink", snapshot.toString());
                         productList.add(product);
                     }
                 } else {
@@ -86,20 +99,37 @@ public class FavoriteFragment extends Fragment {
 
             }
         });
-        adapter = new ProductListAdapter(productList, new IClickItemListener() {
-            @Override
-            public void onClickItemProduct(Product product) {
-                onClickItem(product);
-            }
-        });
+        adapter = new FavoriteListAdapter(productList);
+        favRecyclerview.setAdapter(adapter);
     }
 
-    private void onClickItem(Product product) {
-        Intent intent = new Intent(getActivity(), ItemViewActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("product object", product);
-        intent.putExtra("userPhoneNumber", myKey);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    @Override
+    public void onSwipe(RecyclerView.ViewHolder viewHolder) {
+        if (viewHolder instanceof FavoriteListAdapter.ViewHolder) {
+            String productName = productList.get(viewHolder.getAdapterPosition()).getProduct_name();
+
+            final Product productDelete = productList.get(viewHolder.getAdapterPosition());
+            final int indexDelete = viewHolder.getAdapterPosition();
+
+            // remove item
+            adapter.removeItem(indexDelete);
+            databaseReference = FirebaseDatabase.getInstance().getReference("users").child(myKey).child("wishlist").child(productName);
+            databaseReference.removeValue();
+
+            Snackbar snackbar = Snackbar.make(rootView, "Đã xóa " + productName + " khỏi danh mục yêu thích", Snackbar.LENGTH_LONG);
+            snackbar.setAction("Khôi phục", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    adapter.restoreItem(productDelete, indexDelete);
+                    if (indexDelete == 0 || indexDelete == productList.size() - 1) {
+                        favRecyclerview.scrollToPosition(indexDelete);
+                    }
+                    databaseReference = FirebaseDatabase.getInstance().getReference("users").child(myKey).child("wishlist").child(productName);
+                    databaseReference.setValue(productDelete);
+                }
+            });
+            snackbar.setActionTextColor(Color.parseColor("#BA704F"));
+            snackbar.show();
+        }
     }
 }

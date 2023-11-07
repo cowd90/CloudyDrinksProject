@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/root_view"
     tools:context=".fragment.FavoriteFragment"
     android:background="@color/white"
     tools:ignore="HardcodedText"
@@ -28,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
-            android:background="@drawable/circle_background_recyclerview"
+            android:background="@drawable/circle_background_fav_recyclerview"
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
