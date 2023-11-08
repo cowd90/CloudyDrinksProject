@@ -14,18 +14,25 @@
         app:title="Coffee"/>
 
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/toolbar"
         android:background="#E1E1E1"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
-        android:numColumns="2"
-        android:verticalSpacing="10dp"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/recycler"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/view"
+        android:background="@drawable/bg_category_screen">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:verticalSpacing="10dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/recycler"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

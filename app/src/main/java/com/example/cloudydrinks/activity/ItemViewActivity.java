@@ -12,11 +12,9 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,12 +26,7 @@ import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.model.Size;
 import com.example.cloudydrinks.utils.MySpannable;
 import com.example.cloudydrinks.utils.NumberCurrencyFormatUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,13 +34,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class ItemViewActivity extends AppCompatActivity {
+    private final static String USER = "users";
+    private final static String CART = "Cart";
+    private final static String WISH_LIST = "wishlist";
     private ImageView productImage, plusBtn, minusBtn;
     private AppCompatRadioButton largeSizeRB, mediumSizeRB, smallSizeRB;
     private TextView productNameTV, productPriceTV, productDescriptionTV, quantityTV;
@@ -182,7 +177,7 @@ public class ItemViewActivity extends AppCompatActivity {
         String path = product.getProduct_name() + "_" + sizeTxt;
         int quantity = Integer.parseInt(quantityTV.getText().toString().trim());
 
-        DatabaseReference userCart = FirebaseDatabase.getInstance().getReference("users").child(userId).child("Cart");
+        DatabaseReference userCart = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(CART);
         userCart.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -394,7 +389,7 @@ public class ItemViewActivity extends AppCompatActivity {
 
     }
     public void setFavoriteCheckbox(Product product) {
-        DatabaseReference wishlistRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("wishlist").child(product.getProduct_name());
+        DatabaseReference wishlistRef = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(WISH_LIST).child(product.getProduct_name());
         wishlistRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -422,7 +417,7 @@ public class ItemViewActivity extends AppCompatActivity {
     }
 
     private void removeFromFavorite(Product product) {
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("wishlist").child(product.getProduct_name());
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(WISH_LIST).child(product.getProduct_name());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -440,7 +435,7 @@ public class ItemViewActivity extends AppCompatActivity {
     }
 
     private void addToFavorite(Product product) {
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("wishlist");
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(WISH_LIST);
         databaseReference.child(product.getProduct_name()).setValue(product);
     }
 }

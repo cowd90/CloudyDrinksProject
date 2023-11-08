@@ -38,7 +38,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class FavoriteFragment extends Fragment implements ItemTouchHelperListener{
+public class FavoriteFragment extends Fragment implements ItemTouchHelperListener {
+    private final static String USER = "users";
+    private final static String WISH_LIST = "wishlist";
     private ArrayList<Product> productList;
     private RecyclerView favRecyclerview;
     private FavoriteListAdapter adapter;
@@ -75,7 +77,7 @@ public class FavoriteFragment extends Fragment implements ItemTouchHelperListene
 
         productList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(myKey).child("wishlist");
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(myKey).child(WISH_LIST);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -111,7 +113,7 @@ public class FavoriteFragment extends Fragment implements ItemTouchHelperListene
 
             // remove item
             adapter.removeItem(indexDelete);
-            databaseReference = FirebaseDatabase.getInstance().getReference("users").child(myKey).child("wishlist").child(productName);
+            databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(myKey).child(WISH_LIST).child(productName);
             databaseReference.removeValue();
 
             Snackbar snackbar = Snackbar.make(rootView, "Đã xóa " + productName + " khỏi danh mục yêu thích", Snackbar.LENGTH_LONG);
@@ -122,7 +124,7 @@ public class FavoriteFragment extends Fragment implements ItemTouchHelperListene
                     if (indexDelete == 0 || indexDelete == productList.size() - 1) {
                         favRecyclerview.scrollToPosition(indexDelete);
                     }
-                    databaseReference = FirebaseDatabase.getInstance().getReference("users").child(myKey).child("wishlist").child(productName);
+                    databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(myKey).child(WISH_LIST).child(productName);
                     databaseReference.setValue(productDelete);
                 }
             });

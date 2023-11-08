@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,6 +36,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class PaymentActivity extends AppCompatActivity {
+    private final static String USER = "users";
+    private final static String CART = "Cart";
+    private final static String ORDER = "order";
+    private final static String DELIVERING = "status_delivering";
     private RecyclerView paymentRecyclerView;
     private ArrayList<CartModel> cartList;
     private DatabaseReference databaseReference;
@@ -93,17 +96,17 @@ public class PaymentActivity extends AppCompatActivity {
         }
     };
     public void addToOrder() {
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.hasChild("Cart")) {
+                if(snapshot.hasChild(CART)) {
                     cartList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.child("Cart").getChildren()) {
+                    for (DataSnapshot dataSnapshot : snapshot.child(CART).getChildren()) {
                         CartModel cartModel = dataSnapshot.getValue(CartModel.class);
                         cartList.add(cartModel);
-                        databaseReference.child("Cart").removeValue();
+                        databaseReference.child(CART).removeValue();
                     }
 
                     for (CartModel model : cartList) {
@@ -120,7 +123,7 @@ public class PaymentActivity extends AppCompatActivity {
                         order.setContact(contact);
 
                         String orderDeliveringKey = RandomKey.generateKey();
-                        databaseReference.child("order").child("status_delivering").child(order.getOrderId()).setValue(order).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        databaseReference.child(ORDER).child(DELIVERING).child(order.getOrderId()).setValue(order).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(PaymentActivity.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
@@ -148,7 +151,7 @@ public class PaymentActivity extends AppCompatActivity {
         cartList = new ArrayList<>();
         totalPrice = 0;
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("Cart");
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(CART);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override

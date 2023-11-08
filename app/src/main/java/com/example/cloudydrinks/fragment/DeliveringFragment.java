@@ -45,6 +45,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class DeliveringFragment extends Fragment {
+    private final static String USER = "users";
+    private final static String ORDER = "order";
+    private final static String DELIVERING = "status_delivering";
+    private final static String STATUS_CANCEL = "status_cancel";
+    private final static String DELIVERED = "status_delivered";
     private RecyclerView deliveringStatusRV;
     private ArrayList<Order> orderList;
     private Order order;
@@ -76,7 +81,7 @@ public class DeliveringFragment extends Fragment {
 
         orderList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order").child("status_delivering");
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userid).child(ORDER).child(DELIVERING);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -124,19 +129,19 @@ public class DeliveringFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order");
+                        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userid).child(ORDER);
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 // remove from delivering status
-                                databaseReference.child("status_delivering").child(order.getOrderId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                databaseReference.child(DELIVERING).child(order.getOrderId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Toast.makeText(getActivity(), "Hủy thành công", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 // add drink to cancel fragment
-                                databaseReference.child("status_cancel").child(order.getOrderId()).setValue(order);
+                                databaseReference.child(STATUS_CANCEL).child(order.getOrderId()).setValue(order);
                             }
 
                             @Override
@@ -155,19 +160,19 @@ public class DeliveringFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order");
+                        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userid).child(ORDER);
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 // remove from delivering status
-                                databaseReference.child("status_delivering").child(order.getOrderId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                databaseReference.child(DELIVERING).child(order.getOrderId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Toast.makeText(getActivity(), "Đã nhận được sản phẩm", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 // add drink to cancel fragment
-                                databaseReference.child("status_delivered").child(order.getOrderId()).setValue(order);
+                                databaseReference.child(DELIVERED).child(order.getOrderId()).setValue(order);
                             }
 
                             @Override

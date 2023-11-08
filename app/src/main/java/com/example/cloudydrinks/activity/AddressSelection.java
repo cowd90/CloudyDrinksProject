@@ -9,14 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.AddressAdapter;
 import com.example.cloudydrinks.local_data.DataLocalManager;
-import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Contact;
 import com.example.cloudydrinks.my_interface.IAddressClickListener;
 import com.example.cloudydrinks.my_interface.IEditClickListener;
@@ -30,12 +28,12 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class AddressSelection extends AppCompatActivity {
-    private RecyclerView addressRecyclerView;
+    private final static String USER = "users";
+    private final static String ADDRESS_PATH = "contact_address";
     private ArrayList<Contact> addressList;
-    private DatabaseReference databaseReference;
     private String userId;
     private AddressAdapter addressAdapter;
-    private LinearLayout addAddressLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +50,7 @@ public class AddressSelection extends AppCompatActivity {
             }
         });
 
-        addAddressLayout = findViewById(R.id.addAddressLayout);
+        LinearLayout addAddressLayout = findViewById(R.id.addAddressLayout);
 
         addAddressLayout.setOnClickListener(moveToAddAddress);
 
@@ -65,17 +63,18 @@ public class AddressSelection extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(AddressSelection.this, AddressActivity.class);
+            intent.putExtra("whatToDo", "Add new address");
             startActivity(intent);
         }
     };
     public void generateAddressList() {
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(AddressSelection.this, LinearLayoutManager.VERTICAL, false);
-        addressRecyclerView = findViewById(R.id.addressListRV);
+        RecyclerView addressRecyclerView = findViewById(R.id.addressListRV);
         addressRecyclerView.setLayoutManager(gridLayoutManager);
 
         addressList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("contact_address");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(ADDRESS_PATH);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override

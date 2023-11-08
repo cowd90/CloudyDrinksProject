@@ -27,7 +27,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
+    private final static String USER = "users";
+    private final static String USER_INFO = "user_info";
     private EditText passwordET, phoneNumberET;
     private boolean passwordShowing = false;
     private ProgressBar progressBar;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         TextView tv_signUp = findViewById(R.id.sign_up);
         TextView tv_forgetpwd = findViewById(R.id.forget_pwd);
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         String userPhoneNumber = phoneNumberET.getText().toString().trim();
         String userPassword = passwordET.getText().toString().trim();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("user_info");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(USER).child(userPhoneNumber).child(USER_INFO);
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -191,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
                         progressBar.setVisibility(View.GONE);
                         DataLocalManager.setUserId(userPhoneNumber);
-                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
                     } else {
                         progressBar.setVisibility(View.GONE);

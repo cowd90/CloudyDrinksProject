@@ -1,16 +1,12 @@
 package com.example.cloudydrinks.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +24,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class CancelOrderFragment extends Fragment {
+    private final static String USER = "users";
+    private final static String ORDER = "order";
+    private final static String STATUS_CANCEL = "status_cancel";
     private RecyclerView recyclerView;
     private ArrayList<Order> orderList;
     private Order order;
@@ -58,7 +57,7 @@ public class CancelOrderFragment extends Fragment {
 
         orderList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order").child("status_cancel");
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userid).child(ORDER).child(STATUS_CANCEL);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override

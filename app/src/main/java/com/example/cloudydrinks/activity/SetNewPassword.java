@@ -9,7 +9,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SetNewPassword extends AppCompatActivity {
+    private final static String USER = "users";
+    private final static String USER_INFO = "user_info";
+    private final static String PASSWORD = "password";
     private EditText passwordET, conPasswordET;
     private ImageView passwordIcon, conPasswordIcon;
     private Button setPassWordBtn;
@@ -51,13 +53,13 @@ public class SetNewPassword extends AppCompatActivity {
                 if (TextUtils.equals(newPassword, conNewPassword)) {
 
                     FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
-                    DatabaseReference reference = rootNode.getReference("users");
+                    DatabaseReference reference = rootNode.getReference(USER);
 
-                    reference.child(userId).child("user_info").child("password").setValue(newPassword);
+                    reference.child(userId).child(USER_INFO).child(PASSWORD).setValue(newPassword);
 
                     Toast.makeText(SetNewPassword.this, "Cập nhật mật khẩu thành công!", Toast.LENGTH_SHORT).show();
 
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 } else {
                     conPasswordET.setError("Mật khẩu không khớp");
                     conPasswordET.requestFocus();

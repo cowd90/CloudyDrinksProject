@@ -1,7 +1,6 @@
 package com.example.cloudydrinks.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -13,22 +12,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.adapter.CartAdapter;
 import com.example.cloudydrinks.local_data.DataLocalManager;
-import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Contact;
-import com.example.cloudydrinks.model.Product;
-import com.example.cloudydrinks.utils.NumberCurrencyFormatUtil;
 import com.example.cloudydrinks.utils.RandomKey;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,12 +32,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.LongFunction;
 
 public class AddressActivity extends AppCompatActivity {
+    private final static String USER = "users";
+    private final static String ADDRESS_PATH = "contact_address";
     private String selectedDistrict, selectedWard;
     private Spinner districtSpinner, wardSpinner;
     private ArrayAdapter<CharSequence> districtAdapter, wardAdapter;
@@ -56,6 +48,7 @@ public class AddressActivity extends AppCompatActivity {
     private String fullName, phoneNo, district, ward, street;
     private String addressId;
     private int wardPosition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +64,11 @@ public class AddressActivity extends AppCompatActivity {
 
         // get user
         userId = DataLocalManager.getUserId();
+
+        String whatToDo = getIntent().getStringExtra("whatToDo");
+        if (whatToDo != null && whatToDo.equals("Add new address")) {
+            deleteAddressBtn.setVisibility(View.GONE);
+        }
 
         districtAdapter = ArrayAdapter.createFromResource(this, R.array.district_arr, R.layout.spinner_layout);
         districtAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
@@ -193,7 +191,7 @@ public class AddressActivity extends AppCompatActivity {
             }
         });
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -358,7 +356,7 @@ public class AddressActivity extends AppCompatActivity {
     public void createOrUpdateAddress() {
         addressId = RandomKey.generateKey();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("contact_address");
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(ADDRESS_PATH);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -433,7 +431,7 @@ public class AddressActivity extends AppCompatActivity {
                     .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("contact_address");
+                            databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(ADDRESS_PATH);
                             databaseReference.child(address.getAddressId()).removeValue();
                             finish();
                         }

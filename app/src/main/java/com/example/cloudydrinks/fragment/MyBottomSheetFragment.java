@@ -40,8 +40,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class MyBottomSheetFragment extends BottomSheetDialogFragment {
-    private ArrayList<CartModel> cartList;
-    private MaterialButton checkOutBtn;
+    private final static String USER = "users";
+    private final static String CART = "Cart";
+    private final ArrayList<CartModel> cartList;
     private String userId;
     private DatabaseReference databaseReference;
     private int totalPrice;
@@ -63,7 +64,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_bottom_sheet, null);
         bottomSheetDialog.setContentView(view);
 
-        checkOutBtn = view.findViewById(R.id.checkoutBtn);
+        MaterialButton checkOutBtn = view.findViewById(R.id.checkoutBtn);
         checkOutBtn.setOnClickListener(onCheckoutListener);
 
         recyclerView = view.findViewById(R.id.cart_item_RV);
@@ -123,7 +124,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String path = cartModel.getProduct_name() + "_" + cartModel.getSize();
 
-                        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("Cart").child(path);
+                        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(CART).child(path);
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {

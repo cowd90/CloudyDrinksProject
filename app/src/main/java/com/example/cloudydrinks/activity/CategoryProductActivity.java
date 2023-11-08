@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.GridView;
 
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.adapter.CategoryAdapter;
 import com.example.cloudydrinks.adapter.PopularArticleAdapter;
 import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Category;
@@ -28,12 +29,11 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class CategoryProductActivity extends AppCompatActivity {
-    private RecyclerView recycler;
+    private final static String PRODUCT_PATH = "products";
     private ArrayList<Product> productList;
-    private DatabaseReference databaseReference;
-    private RecyclerView.Adapter adapter;
+    private PopularArticleAdapter adapter;
     private Category category;
-    private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +45,6 @@ public class CategoryProductActivity extends AppCompatActivity {
             return;
         }
         category = (Category) bundle.get("category");
-
-        // Get current user
-        userId = DataLocalManager.getUserId();
 
         // set up toolbar of sign up activity
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -65,12 +62,12 @@ public class CategoryProductActivity extends AppCompatActivity {
     }
     private void recyclerView() {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(CategoryProductActivity.this, 2, GridLayoutManager.VERTICAL, false);
-        recycler = findViewById(R.id.recycler);
+        RecyclerView recycler = findViewById(R.id.recycler);
         recycler.setLayoutManager(gridLayoutManager);
 
         productList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("products");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(PRODUCT_PATH);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override

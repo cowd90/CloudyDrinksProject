@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -27,12 +28,15 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Objects;
 
 public class ConfirmPasswordActivity extends AppCompatActivity {
+    private final static String USER = "users";
+    private final static String USER_INFO = "user_info";
     private ImageView passwordIcon;
     private EditText passwordET;
     private boolean passwordShowing = false;
     private DatabaseReference databaseReference;
     private String userId;
     private String currentPassword;
+    private Button confirmOldPwdBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +56,7 @@ public class ConfirmPasswordActivity extends AppCompatActivity {
 
         passwordIcon = findViewById(R.id.passwordIcon);
         passwordET = findViewById(R.id.passwordET);
-        Button confirmOldPwdBtn = findViewById(R.id.confirmOldPwdBtn);
+        confirmOldPwdBtn = findViewById(R.id.confirmOldPwdBtn);
 
         // hide/show password listener
         passwordIcon.setOnClickListener(new View.OnClickListener() {
@@ -78,8 +82,8 @@ public class ConfirmPasswordActivity extends AppCompatActivity {
         confirmOldPwdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("user_info");
-                databaseReference.addValueEventListener(new ValueEventListener() {
+                databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(USER_INFO);
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User user = snapshot.getValue(User.class);
@@ -87,6 +91,7 @@ public class ConfirmPasswordActivity extends AppCompatActivity {
                             if (user.getPassword().equals(currentPassword)) {
                                 Intent intent = new Intent(ConfirmPasswordActivity.this, ChangePasswordActivity.class);
                                 startActivity(intent);
+                                finish();
                             } else {
                                 Toast.makeText(ConfirmPasswordActivity.this, "Mật khẩu không đúng. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                             }
@@ -111,6 +116,15 @@ public class ConfirmPasswordActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             currentPassword = s.toString();
+            if (!currentPassword.isEmpty()) {
+                confirmOldPwdBtn.setEnabled(true);
+                confirmOldPwdBtn.setBackgroundColor(Color.parseColor("#FB6E64"));
+                confirmOldPwdBtn.setTextColor(Color.WHITE);
+            } else {
+                confirmOldPwdBtn.setTextColor(Color.parseColor("#BCBCBC"));
+                confirmOldPwdBtn.setBackgroundColor(Color.parseColor("#DCDCDC"));
+                confirmOldPwdBtn.setEnabled(false);
+            }
         }
 
         @Override

@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class ProductSearchingActivity extends AppCompatActivity {
-
+    private final static String PRODUCT = "products";
     private TextView cancelSearchingTV;
     private ArrayList<Product> productList;
     private DatabaseReference databaseReference;
@@ -62,7 +62,7 @@ public class ProductSearchingActivity extends AppCompatActivity {
 
         productList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("products");
+        databaseReference = FirebaseDatabase.getInstance().getReference(PRODUCT);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override

@@ -10,16 +10,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -28,8 +24,6 @@ import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.BannerAdapter;
 import com.example.cloudydrinks.adapter.CategoryIconAdapter;
 import com.example.cloudydrinks.adapter.PopularArticleAdapter;
-import com.example.cloudydrinks.adapter.ViewPagerAdapter;
-import com.example.cloudydrinks.fragment.DeliveringFragment;
 import com.example.cloudydrinks.fragment.DeliveryFragment;
 import com.example.cloudydrinks.fragment.FavoriteFragment;
 import com.example.cloudydrinks.fragment.HomeFragment;
@@ -61,6 +55,12 @@ import java.util.TimerTask;
 import me.relex.circleindicator.CircleIndicator;
 
 public class HomeActivity extends AppCompatActivity {
+    private final static String USER = "users";
+    private final static String BANNERS = "banners";
+    private final static String PRODUCT = "products";
+    private final static String CART = "Cart";
+    private final static String WISH_LIST = "wishlist";
+    private final static String CATEGORY = "categories";
     private RecyclerView.Adapter adapterCategory, adapterPopular;
     private DatabaseReference databaseReference;
     private ArrayList<Product> popularProductList;
@@ -101,7 +101,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Get data from firebase
         cartList = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("Cart");
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(CART);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -203,7 +203,7 @@ public class HomeActivity extends AppCompatActivity {
     private void recyclerViewBanner() {
 
         bannerList = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("banners");
+        databaseReference = FirebaseDatabase.getInstance().getReference(BANNERS);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -276,7 +276,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerViewCategoryList.setNestedScrollingEnabled(false);
 
         categoryList = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("categories");
+        databaseReference = FirebaseDatabase.getInstance().getReference(CATEGORY);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -320,7 +320,7 @@ public class HomeActivity extends AppCompatActivity {
 
         popularProductList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("products");
+        databaseReference = FirebaseDatabase.getInstance().getReference(PRODUCT);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -356,7 +356,7 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
     private void loadFavoriteQuantityItem() {
-        DatabaseReference wishList = FirebaseDatabase.getInstance().getReference("users").child(userId).child("wishlist");
+        DatabaseReference wishList = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(WISH_LIST);
         wishList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

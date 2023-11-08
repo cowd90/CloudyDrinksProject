@@ -36,9 +36,9 @@ public class SignUpActivity extends AppCompatActivity {
     private CheckBox policyInput;
     private ImageView passwordIcon, conPasswordIcon;
     private boolean passwordShowing = false;
+    private final static String USER = "users";
     private FirebaseDatabase database;
     private DatabaseReference reference;
-    private static final String USER = "users";
     private ProgressBar progressBar;
 
     @Override
@@ -111,8 +111,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                i.putExtra("phoneNumberInput", phoneNumberET.getText().toString().trim());
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
             }
         });
@@ -217,7 +216,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    private TextWatcher textWatcher = new TextWatcher() {
+    private final TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -239,7 +238,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         }
     };
-    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+    private final CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (policyInput.isChecked()) {

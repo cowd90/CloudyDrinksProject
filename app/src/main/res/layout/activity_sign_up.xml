@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.SignUpActivity"
     android:gravity="center"
-    android:background="@drawable/sign_up_screen"
+    android:background="@drawable/bg_register_screen"
     tools:ignore="HardcodedText">
 
     <androidx.appcompat.widget.Toolbar

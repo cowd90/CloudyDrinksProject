@@ -29,6 +29,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class DeliveredFragment extends Fragment {
+    private final static String USER = "users";
+    private final static String ORDER = "order";
+    private final static String DELIVERED = "status_delivered";
     private RecyclerView recyclerView;
     private ArrayList<Order> orderList;
     private Order order;
@@ -61,7 +64,7 @@ public class DeliveredFragment extends Fragment {
 
         orderList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order").child("status_delivered");
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userid).child(ORDER).child(DELIVERED);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override

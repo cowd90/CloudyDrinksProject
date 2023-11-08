@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Objects;
 
 public class ForgetPasswordActivity extends AppCompatActivity {
+    private final static String USER = "users";
     private MaterialButton button;
     private EditText phoneNumberET;
     private ProgressBar progressBar;
@@ -56,7 +57,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 String userPhoneNumber = phoneNumberET.getText().toString().trim();
 
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference(USER);
                 Query username = reference.orderByChild("phoneNumber").equalTo(userPhoneNumber);
 
                 username.addListenerForSingleValueEvent(new ValueEventListener() {

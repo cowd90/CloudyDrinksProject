@@ -24,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class ProfileFragment extends Fragment {
+    private final static String USER = "users";
+    private final static String USER_INFO = "user_info";
     private TextView userNameTV, userPhoneTV;
     private DatabaseReference databaseReference;
     private String userId;
@@ -60,12 +62,11 @@ public class ProfileFragment extends Fragment {
 
         userId = DataLocalManager.getUserId();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("user_info");
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(USER_INFO);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                Log.d("user", user.toString());
 
                 userNameTV.setText(user.getUsername());
                 userPhoneTV.setText(user.getPhoneNumber());

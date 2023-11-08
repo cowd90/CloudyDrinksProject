@@ -17,6 +17,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activity.ChangePasswordActivity"
+            android:exported="false"/>
+        <activity
             android:name=".activity.ConfirmPasswordActivity"
             android:exported="false" />
         <activity
@@ -27,9 +30,6 @@
             android:exported="false" />
         <activity
             android:name=".activity.PaymentActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.MyFragment"
             android:exported="false" />
         <activity
             android:name=".activity.CategoryProductActivity"
@@ -57,9 +57,9 @@
         <activity
             android:name=".activity.SignUpActivity"
             android:exported="false"
-            android:parentActivityName=".activity.MainActivity" />
+            android:parentActivityName=".activity.LoginActivity" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
