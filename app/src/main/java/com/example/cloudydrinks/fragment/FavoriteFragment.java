@@ -24,6 +24,7 @@ import com.example.cloudydrinks.activity.ProductSearchingActivity;
 import com.example.cloudydrinks.adapter.FavoriteListAdapter;
 import com.example.cloudydrinks.adapter.ProductListAdapter;
 import com.example.cloudydrinks.adapter.RecyclerViewItemTouchHelper;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.my_interface.IClickItemListener;
 import com.example.cloudydrinks.my_interface.ItemTouchHelperListener;
@@ -69,11 +70,8 @@ public class FavoriteFragment extends Fragment implements ItemTouchHelperListene
         return mView;
     }
     private void generateDrinkList() {
-        Bundle data = getArguments();
 
-        if (data != null) {
-            myKey = data.getString("userPhoneNo");
-        }
+        myKey = DataLocalManager.getUserId();
 
         productList = new ArrayList<>();
 

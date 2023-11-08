@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.AddressAdapter;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Contact;
 import com.example.cloudydrinks.my_interface.IAddressClickListener;
@@ -32,7 +33,7 @@ public class AddressSelection extends AppCompatActivity {
     private RecyclerView addressRecyclerView;
     private ArrayList<Contact> addressList;
     private DatabaseReference databaseReference;
-    private String userPhoneNumber, addressId;
+    private String userId;
     private AddressAdapter addressAdapter;
     private LinearLayout addAddressLayout;
     @Override
@@ -50,12 +51,12 @@ public class AddressSelection extends AppCompatActivity {
                 finish();
             }
         });
+
         addAddressLayout = findViewById(R.id.addAddressLayout);
 
         addAddressLayout.setOnClickListener(moveToAddAddress);
 
-        userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
-        addressId = getIntent().getStringExtra("addressId");
+        userId = DataLocalManager.getUserId();
 
         generateAddressList();
     }
@@ -64,7 +65,6 @@ public class AddressSelection extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(AddressSelection.this, AddressActivity.class);
-            intent.putExtra("userPhoneNumber", userPhoneNumber);
             startActivity(intent);
         }
     };
@@ -75,11 +75,12 @@ public class AddressSelection extends AppCompatActivity {
 
         addressList = new ArrayList<>();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("contact_address");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("contact_address");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                addressList.clear();
                 if (snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         Contact contact = dataSnapshot.getValue(Contact.class);
@@ -115,8 +116,8 @@ public class AddressSelection extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putSerializable("contactObj", contact);
         intent.putExtras(bundle);
-        intent.putExtra("userPhoneNumber", userPhoneNumber);
         startActivity(intent);
+        finish();
     }
     public void onClickEdit(Contact contact) {
         Intent intent = new Intent(AddressSelection.this, AddressActivity.class);
@@ -124,7 +125,6 @@ public class AddressSelection extends AppCompatActivity {
         bundle.putSerializable("contactObj", contact);
         intent.putExtra("addressId", contact.getAddressId());
         intent.putExtras(bundle);
-        intent.putExtra("userPhoneNumber", userPhoneNumber);
         startActivity(intent);
     }
 }

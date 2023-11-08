@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.ReiceivedAndCancelAdapter;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Order;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,10 +54,7 @@ public class CancelOrderFragment extends Fragment {
     }
     public void generateList() {
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        userid = preferences.getString("userid", null);
-
-        Log.d("phone number", userid);
+        userid = DataLocalManager.getUserId();
 
         orderList = new ArrayList<>();
 

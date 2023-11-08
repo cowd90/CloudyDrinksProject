@@ -2,20 +2,29 @@ package com.example.cloudydrinks.model;
 
 public class Order {
     private int product_id, product_price, quantity, totalPrice;
-    private String product_name, size;
+    private String orderId, product_name, size;
     private Contact contact;
 
     public Order() {
     }
 
-    public Order(int product_id, int product_price, int quantity, int totalPrice, String product_name, String size, Contact contact) {
+    public Order(int product_id, int product_price, int quantity, int totalPrice, String orderId, String product_name, String size, Contact contact) {
         this.product_id = product_id;
         this.product_price = product_price;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
+        this.orderId = orderId;
         this.product_name = product_name;
         this.size = size;
         this.contact = contact;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public int getProduct_id() {

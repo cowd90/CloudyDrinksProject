@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.adapter.CartAdapter;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Contact;
 import com.example.cloudydrinks.model.Product;
@@ -44,9 +48,9 @@ public class AddressActivity extends AppCompatActivity {
     private String selectedDistrict, selectedWard;
     private Spinner districtSpinner, wardSpinner;
     private ArrayAdapter<CharSequence> districtAdapter, wardAdapter;
-    private MaterialButton submitBtn;
+    private MaterialButton submitBtn, deleteAddressBtn;
     private EditText fullNameET, phoneNumberET, streetET;
-    private String userPhoneNumber;
+    private String userId;
     private DatabaseReference databaseReference;
     private Contact address;
     private String fullName, phoneNo, district, ward, street;
@@ -63,16 +67,10 @@ public class AddressActivity extends AppCompatActivity {
         fullNameET = findViewById(R.id.fullNameET);
         phoneNumberET = findViewById(R.id.phoneNumberET);
         streetET = findViewById(R.id.streetET);
+        deleteAddressBtn = findViewById(R.id.deleteAddressBtn);
 
         // get user
-        userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle == null) {
-            return;
-        }
-
-        address = (Contact) bundle.get("contactObj");
+        userId = DataLocalManager.getUserId();
 
         districtAdapter = ArrayAdapter.createFromResource(this, R.array.district_arr, R.layout.spinner_layout);
         districtAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
@@ -195,7 +193,7 @@ public class AddressActivity extends AppCompatActivity {
             }
         });
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber);
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -208,10 +206,17 @@ public class AddressActivity extends AppCompatActivity {
 
             }
         });
-
+        deleteAddressBtn.setOnClickListener(deleteAddressListener);
         submitBtn.setOnClickListener(onSubmitListener);
     }
     public void loadAddressData() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            return;
+        }
+
+        address = (Contact) bundle.get("contactObj");
+
         if (address != null) {
             fullName = address.getFullName();
             phoneNo = address.getPhoneNo();
@@ -353,7 +358,7 @@ public class AddressActivity extends AppCompatActivity {
     public void createOrUpdateAddress() {
         addressId = RandomKey.generateKey();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("contact_address");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("contact_address");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -376,7 +381,6 @@ public class AddressActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(AddressActivity.this, "Cập nhật chỉ thành công", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(AddressActivity.this, AddressSelection.class);
-                                intent.putExtra("userPhoneNumber", userPhoneNumber);
                                 intent.putExtra("addressId", address.getAddressId());
                                 startActivity(intent);
                             }
@@ -397,7 +401,6 @@ public class AddressActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             Toast.makeText(AddressActivity.this, "Thêm địa chỉ thành công", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(AddressActivity.this, AddressSelection.class);
-                            intent.putExtra("userPhoneNumber", userPhoneNumber);
                             intent.putExtra("addressId", addressId);
                             startActivity(intent);
                         }
@@ -420,6 +423,22 @@ public class AddressActivity extends AppCompatActivity {
             } else {
                 createOrUpdateAddress();
             }
+        }
+    };
+    public View.OnClickListener deleteAddressListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            new AlertDialog.Builder(AddressActivity.this)
+                    .setMessage("Bạn có chắc chắn muốn địa chỉ này?")
+                    .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("contact_address");
+                            databaseReference.child(address.getAddressId()).removeValue();
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Hủy", null).show();
         }
     };
     public TextWatcher textWatcher = new TextWatcher() {

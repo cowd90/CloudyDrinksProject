@@ -33,14 +33,30 @@
                 android:layout_weight="9"
                 android:layout_marginStart="5dp">
 
-                <TextView
-                    android:id="@+id/productNameCartTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bạc Xỉu Nóng"
-                    android:textStyle="bold"
-                    android:textColor="#5A5A5A"
-                    android:textSize="16sp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/quantityTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="x1"
+                        android:textStyle="italic"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/productNameCartTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bạc Xỉu Nóng"
+                        android:textStyle="bold"
+                        android:textColor="#5A5A5A"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/productStats"
@@ -69,29 +85,6 @@
                 android:gravity="center"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/minusBtn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/minus_button"
-                    android:scaleType="centerCrop"/>
-
-                <TextView
-                    android:id="@+id/quantityTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1"
-                    android:textSize="16sp"
-                    android:gravity="center"
-                    android:layout_marginHorizontal="8dp"/>
-
-                <ImageView
-                    android:id="@+id/plusBtn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/plus_circle"
-                    android:scaleType="centerCrop"/>
 
                 <ImageView
                     android:id="@+id/removeCartBtn"

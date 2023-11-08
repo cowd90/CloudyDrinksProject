@@ -125,6 +125,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/changePassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp">
@@ -141,7 +142,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:text="Thay đổi thông tin"
+                            android:text="Thay đổi mật khẩu"
                             android:textColor="#ffffff"
                             android:textStyle="bold"
                             android:layout_toEndOf="@+id/change_info_icon"

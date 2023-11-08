@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.activity.PaymentActivity;
 import com.example.cloudydrinks.adapter.CartAdapter;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Order;
 import com.example.cloudydrinks.my_interface.IClickCartModel;
@@ -41,12 +42,11 @@ import java.util.ArrayList;
 public class MyBottomSheetFragment extends BottomSheetDialogFragment {
     private ArrayList<CartModel> cartList;
     private MaterialButton checkOutBtn;
-    private String userPhoneNumber;
+    private String userId;
     private DatabaseReference databaseReference;
     private int totalPrice;
     private TextView totalPriceTV;
     private RecyclerView recyclerView;
-    private int quantity;
 
     public MyBottomSheetFragment(ArrayList<CartModel> cartList) {
         this.cartList = cartList;
@@ -58,7 +58,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
         BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
 
         // Get user id
-        userPhoneNumber = getArguments().getString("userPhoneNumber");
+        userId = DataLocalManager.getUserId();
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_bottom_sheet, null);
         bottomSheetDialog.setContentView(view);
@@ -91,7 +91,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
             totalPriceTV.setText(NumberCurrencyFormatUtil.numberCurrencyFormat(String.valueOf(totalPrice)));
         }
 
-        CartAdapter cartAdapter = new CartAdapter(cartList, iDelete, iIncreaseQuantity, iDecreaseQuantity);
+        CartAdapter cartAdapter = new CartAdapter(cartList, iDelete);
 
         recyclerView.setAdapter(cartAdapter);
     }
@@ -103,7 +103,6 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
                 Toast.makeText(getActivity(), "Vui lòng thêm sản phẩm vào giỏ hàng để tiếp tục", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(getActivity(), PaymentActivity.class);
-                intent.putExtra("userPhoneNumber", userPhoneNumber);
                 startActivity(intent);
             }
         }
@@ -116,75 +115,6 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
         }
     };
 
-    public IClickCartModel iDecreaseQuantity = new IClickCartModel() {
-        @Override
-        public void onClickCartListener(CartModel cartModel) {
-            decreaseQuantity(cartModel);
-        }
-    };
-
-    public IClickCartModel iIncreaseQuantity = new IClickCartModel() {
-        @Override
-        public void onClickCartListener(CartModel cartModel) {
-            increaseQuantity(cartModel);
-        }
-    };
-
-    public void decreaseQuantity(CartModel cartModel) {
-        String path = cartModel.getProduct_name() + "_" + cartModel.getSize();
-
-        quantity = cartModel.getQuantity();
-        quantity--;
-        if (quantity <= 0) {
-            quantity = 0;
-        }
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("Cart").child(path);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    CartModel model = snapshot.getValue(CartModel.class);
-                    model.setQuantity(quantity);
-                    databaseReference.setValue(model);
-                    CartAdapter cartAdapter = new CartAdapter(cartList, iDelete, iIncreaseQuantity, iDecreaseQuantity);
-                    recyclerView.setAdapter(cartAdapter);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    public void increaseQuantity(CartModel cartModel) {
-        String path = cartModel.getProduct_name() + "_" + cartModel.getSize();
-
-        quantity = cartModel.getQuantity();
-        quantity++;
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("Cart").child(path);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    CartModel model = snapshot.getValue(CartModel.class);
-                    model.setQuantity(quantity);
-                    databaseReference.setValue(model);
-                    CartAdapter cartAdapter = new CartAdapter(cartList, iDelete, iIncreaseQuantity, iDecreaseQuantity);
-                    recyclerView.setAdapter(cartAdapter);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     public void deleteItem(CartModel cartModel) {
         new AlertDialog.Builder(getActivity())
                 .setMessage("Bạn có chắc chắn muốn xóa khỏi giỏ hàng?")
@@ -193,7 +123,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String path = cartModel.getProduct_name() + "_" + cartModel.getSize();
 
-                        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("Cart").child(path);
+                        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("Cart").child(path);
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -204,7 +134,7 @@ public class MyBottomSheetFragment extends BottomSheetDialogFragment {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             totalPrice -= cartModel.getTotalPrice();
                                             totalPriceTV.setText(NumberCurrencyFormatUtil.numberCurrencyFormat(String.valueOf(totalPrice)));
-                                            CartAdapter cartAdapter = new CartAdapter(cartList, iDelete, iIncreaseQuantity, iDecreaseQuantity);
+                                            CartAdapter cartAdapter = new CartAdapter(cartList, iDelete);
                                             recyclerView.setAdapter(cartAdapter);
                                             Toast.makeText(getActivity(), "Đã xóa khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
                                         }

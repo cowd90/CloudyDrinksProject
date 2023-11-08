@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -172,7 +173,6 @@ public class VerifyOTP extends AppCompatActivity {
 
     private void updateUser() {
         Intent i = new Intent(getApplicationContext(), SetNewPassword.class);
-        i.putExtra("phoneNo", phoneNo);
         startActivity(i);
         finish();
     }

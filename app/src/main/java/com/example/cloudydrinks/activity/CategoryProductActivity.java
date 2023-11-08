@@ -14,6 +14,7 @@ import android.widget.GridView;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.PopularArticleAdapter;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Category;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.my_interface.IClickItemListener;
@@ -32,7 +33,7 @@ public class CategoryProductActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private RecyclerView.Adapter adapter;
     private Category category;
-    private String userPhoneNo;
+    private String userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +47,7 @@ public class CategoryProductActivity extends AppCompatActivity {
         category = (Category) bundle.get("category");
 
         // Get current user
-        userPhoneNo = getIntent().getStringExtra("userPhoneNumber");
+        userId = DataLocalManager.getUserId();
 
         // set up toolbar of sign up activity
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -103,7 +104,6 @@ public class CategoryProductActivity extends AppCompatActivity {
         Intent intent = new Intent(CategoryProductActivity.this, ItemViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("product object", product);
-        intent.putExtra("userPhoneNumber", userPhoneNo);
         intent.putExtras(bundle);
         startActivity(intent);
     }

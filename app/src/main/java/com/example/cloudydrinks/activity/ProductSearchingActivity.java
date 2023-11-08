@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.ProductListAdapter;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.my_interface.IClickItemListener;
 import com.google.firebase.database.DataSnapshot;
@@ -37,17 +38,13 @@ public class ProductSearchingActivity extends AppCompatActivity {
     private ProductListAdapter adapter;
     private RecyclerView recyclerViewFoodList;
     private SearchView searchView;
-    private String userPhoneNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_searching);
 
         cancelSearchingTV = findViewById(R.id.cancelSearchingTV);
-        searchView = findViewById(R.id.searchBarET);// Get user phone number
-
-        // Get user phone number
-        userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
+        searchView = findViewById(R.id.searchBarET);
 
         generateFoodList();
 
@@ -112,7 +109,6 @@ public class ProductSearchingActivity extends AppCompatActivity {
         Intent intent = new Intent(ProductSearchingActivity.this, ItemViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("product object", product);
-        intent.putExtra("userPhoneNumber", userPhoneNumber);
         intent.putExtras(bundle);
         startActivity(intent);
     }

@@ -27,6 +27,7 @@ import com.example.cloudydrinks.activity.PaymentActivity;
 import com.example.cloudydrinks.adapter.AddressAdapter;
 import com.example.cloudydrinks.adapter.DeliveringItemAdapter;
 import com.example.cloudydrinks.adapter.ProductListAdapter;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Contact;
 import com.example.cloudydrinks.model.Order;
@@ -71,10 +72,7 @@ public class DeliveringFragment extends Fragment {
 
     public void generateList() {
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        userid = preferences.getString("userid", null);
-
-        Log.d("phone number", userid);
+        userid = DataLocalManager.getUserId();
 
         orderList = new ArrayList<>();
 
@@ -125,21 +123,20 @@ public class DeliveringFragment extends Fragment {
                 .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String path = order.getProduct_name() + "_" + order.getSize();
 
                         databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order");
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 // remove from delivering status
-                                databaseReference.child("status_delivering").child(path).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                databaseReference.child("status_delivering").child(order.getOrderId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Toast.makeText(getActivity(), "Hủy thành công", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 // add drink to cancel fragment
-                                databaseReference.child("status_cancel").child(path).setValue(order);
+                                databaseReference.child("status_cancel").child(order.getOrderId()).setValue(order);
                             }
 
                             @Override
@@ -157,21 +154,20 @@ public class DeliveringFragment extends Fragment {
                 .setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String path = order.getProduct_name() + "_" + order.getSize();
 
                         databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userid).child("order");
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 // remove from delivering status
-                                databaseReference.child("status_delivering").child(path).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                databaseReference.child("status_delivering").child(order.getOrderId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Toast.makeText(getActivity(), "Đã nhận được sản phẩm", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 // add drink to cancel fragment
-                                databaseReference.child("status_delivered").child(path).setValue(order);
+                                databaseReference.child("status_delivered").child(order.getOrderId()).setValue(order);
                             }
 
                             @Override

@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -189,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
                     if (userPassword.equals(passwordFromDB)) {
 
                         progressBar.setVisibility(View.GONE);
+                        DataLocalManager.setUserId(userPhoneNumber);
                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                        intent.putExtra("userPhoneNumber", userPhoneNumber);
                         startActivity(intent);
                     } else {
                         progressBar.setVisibility(View.GONE);

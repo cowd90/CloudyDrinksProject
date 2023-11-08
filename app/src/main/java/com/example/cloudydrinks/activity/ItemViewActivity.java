@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.model.Size;
@@ -60,9 +61,9 @@ public class ItemViewActivity extends AppCompatActivity {
     private int upsizeLPrice;
     private int quantity, currentPrice;
     private String sizeTxt;
-    private String userPhoneNumber;
+    private String userId;
     private CheckBox favoriteCheckbox;
-    private ArrayList<Product> favList;
+    private ImageView closeIV;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -88,8 +89,16 @@ public class ItemViewActivity extends AppCompatActivity {
         addToCartBtn = findViewById(R.id.addToCartBtn);
         favoriteCheckbox = findViewById(R.id.favCheckbox);
 
+        closeIV = findViewById(R.id.closeIV);
+        closeIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         // Get user phone number
-        userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
+        userId = DataLocalManager.getUserId();
 
         // Get size attributes
         databaseReference = FirebaseDatabase.getInstance().getReference("sizes");
@@ -173,7 +182,7 @@ public class ItemViewActivity extends AppCompatActivity {
         String path = product.getProduct_name() + "_" + sizeTxt;
         int quantity = Integer.parseInt(quantityTV.getText().toString().trim());
 
-        DatabaseReference userCart = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("Cart");
+        DatabaseReference userCart = FirebaseDatabase.getInstance().getReference("users").child(userId).child("Cart");
         userCart.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -385,7 +394,7 @@ public class ItemViewActivity extends AppCompatActivity {
 
     }
     public void setFavoriteCheckbox(Product product) {
-        DatabaseReference wishlistRef = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("wishlist").child(product.getProduct_name());
+        DatabaseReference wishlistRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("wishlist").child(product.getProduct_name());
         wishlistRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -413,7 +422,7 @@ public class ItemViewActivity extends AppCompatActivity {
     }
 
     private void removeFromFavorite(Product product) {
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("wishlist").child(product.getProduct_name());
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("wishlist").child(product.getProduct_name());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -431,7 +440,7 @@ public class ItemViewActivity extends AppCompatActivity {
     }
 
     private void addToFavorite(Product product) {
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("wishlist");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("wishlist");
         databaseReference.child(product.getProduct_name()).setValue(product);
     }
 }

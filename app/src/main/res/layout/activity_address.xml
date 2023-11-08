@@ -99,44 +99,6 @@
                     android:textColor="#858585"/>
 
                 <EditText
-                    android:id="@+id/cityET"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:paddingStart="20dp"
-                    android:padding="10dp"
-                    android:text="Thành phố Hồ Chí Minh"
-                    android:textColor="#9C9B9B"
-                    android:textSize="15sp"
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/edit_text_rounded_corner"
-                    android:backgroundTint="#E0E1E1"
-                    android:elevation="10dp"
-                    android:layout_margin="10dp"
-                    android:enabled="false"
-                    tools:ignore="RtlSymmetry"/>
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:id="@+id/district"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/border"
-                    android:paddingStart="15dp"
-                    tools:ignore="RtlSymmetry"/>
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:id="@+id/ward"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/border"
-                    android:paddingStart="15dp"
-                    tools:ignore="RtlSymmetry"/>
-
-                <EditText
                     android:id="@+id/streetET"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
@@ -152,6 +114,45 @@
                     android:elevation="10dp"
                     android:layout_margin="10dp"
                     android:textCursorDrawable="@drawable/text_cursor"
+                    tools:ignore="RtlSymmetry"/>
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:id="@+id/ward"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="@drawable/border"
+                    android:paddingStart="15dp"
+                    tools:ignore="RtlSymmetry"/>
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:id="@+id/district"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="@drawable/border"
+                    android:paddingStart="15dp"
+                    android:layout_marginBottom="10dp"
+                    tools:ignore="RtlSymmetry"/>
+
+                <EditText
+                    android:id="@+id/cityET"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:paddingStart="20dp"
+                    android:padding="10dp"
+                    android:text="Thành phố Hồ Chí Minh"
+                    android:textColor="#9C9B9B"
+                    android:textSize="15sp"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/edit_text_rounded_corner"
+                    android:backgroundTint="#E0E1E1"
+                    android:elevation="10dp"
+                    android:layout_margin="10dp"
+                    android:enabled="false"
                     tools:ignore="RtlSymmetry"/>
 
             </LinearLayout>

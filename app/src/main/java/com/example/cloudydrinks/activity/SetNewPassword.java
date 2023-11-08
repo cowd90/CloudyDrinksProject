@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -41,7 +42,7 @@ public class SetNewPassword extends AppCompatActivity {
         passwordET.addTextChangedListener(textWatcher);
         conPasswordET.addTextChangedListener(textWatcher);
 
-        String phoneNo = getIntent().getStringExtra("phoneNo");
+        String userId = DataLocalManager.getUserId();
 
         setPassWordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +53,7 @@ public class SetNewPassword extends AppCompatActivity {
                     FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
                     DatabaseReference reference = rootNode.getReference("users");
 
-                    reference.child(phoneNo).child("user_info").child("password").setValue(newPassword);
+                    reference.child(userId).child("user_info").child("password").setValue(newPassword);
 
                     Toast.makeText(SetNewPassword.this, "Cập nhật mật khẩu thành công!", Toast.LENGTH_SHORT).show();
 

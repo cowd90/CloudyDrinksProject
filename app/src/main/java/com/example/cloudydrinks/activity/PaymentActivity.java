@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.PaymentDetailAdapter;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Contact;
 import com.example.cloudydrinks.model.Order;
@@ -38,7 +40,7 @@ public class PaymentActivity extends AppCompatActivity {
     private RecyclerView paymentRecyclerView;
     private ArrayList<CartModel> cartList;
     private DatabaseReference databaseReference;
-    private String userPhoneNumber, contactAddress;
+    private String userId, contactAddress;
     private PaymentDetailAdapter adapter;
     private TextView totalPriceTV, addressTV;
     private int totalPrice;
@@ -51,7 +53,7 @@ public class PaymentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
-        userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
+        userId = DataLocalManager.getUserId();
 
         totalPriceTV = findViewById(R.id.totalPriceTV);
         addressLayout = findViewById(R.id.addressLayout);
@@ -70,36 +72,28 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle == null) {
-            return;
-        }
-
-        contact = (Contact) bundle.get("contactObj");
+        generatePaymentDetail();
 
         addressLayout.setOnClickListener(addAddressListener);
-
-        loadAddress();
-        generatePaymentDetail();
         orderBtn.setOnClickListener(orderClickListener);
-
+        loadAddress();
     }
 
     public View.OnClickListener orderClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            addToOrder();
-            if (!addressTV.getText().toString().trim().equals("Chọn địa chỉ")) {
-                Intent intent = new Intent(PaymentActivity.this, HomeActivity.class);
-                intent.putExtra("userPhoneNumber", userPhoneNumber);
-                startActivity(intent);
-            } else {
+            String addressField = addressTV.getText().toString().trim();
+            if (addressField.equals("Chọn địa chỉ")) {
                 Toast.makeText(PaymentActivity.this, "Vui lòng chọn địa chỉ nhận hàng", Toast.LENGTH_SHORT).show();
+            } else {
+                addToOrder();
+                Intent intent = new Intent(PaymentActivity.this, HomeActivity.class);
+                startActivity(intent);
             }
         }
     };
     public void addToOrder() {
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber);
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -113,7 +107,10 @@ public class PaymentActivity extends AppCompatActivity {
                     }
 
                     for (CartModel model : cartList) {
+                        String orderId = RandomKey.generateKey();
+
                         Order order = new Order();
+                        order.setOrderId(orderId);
                         order.setProduct_id(model.getProduct_id());
                         order.setProduct_name(model.getProduct_name());
                         order.setQuantity(model.getQuantity());
@@ -121,7 +118,9 @@ public class PaymentActivity extends AppCompatActivity {
                         order.setProduct_price(model.getProduct_price());
                         order.setTotalPrice(model.getTotalPrice());
                         order.setContact(contact);
-                        databaseReference.child("order").child("status_delivering").child(model.getProduct_name()+"_"+model.getSize()).setValue(order).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                        String orderDeliveringKey = RandomKey.generateKey();
+                        databaseReference.child("order").child("status_delivering").child(order.getOrderId()).setValue(order).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(PaymentActivity.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
@@ -142,14 +141,14 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void generatePaymentDetail() {
-        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(PaymentActivity.this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PaymentActivity.this);
         paymentRecyclerView = findViewById(R.id.paymentDetailRV);
-        paymentRecyclerView.setLayoutManager(gridLayoutManager);
+        paymentRecyclerView.setLayoutManager(linearLayoutManager);
 
         cartList = new ArrayList<>();
         totalPrice = 0;
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("Cart");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("Cart");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -181,11 +180,17 @@ public class PaymentActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putSerializable("contactObj", contact);
             intent.putExtras(bundle);
-            intent.putExtra("userPhoneNumber", userPhoneNumber);
             startActivity(intent);
         }
     };
     private void loadAddress() {
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            return;
+        }
+        contact = (Contact) bundle.get("contactObj");
+
         if (contact != null) {
             contactAddress = contact.getFullName() + " - " + contact.getPhoneNo() + "\n"
                     + contact.getStreet() + ", " + contact.getWard() + ", "

@@ -35,6 +35,7 @@ import com.example.cloudydrinks.fragment.FavoriteFragment;
 import com.example.cloudydrinks.fragment.HomeFragment;
 import com.example.cloudydrinks.fragment.MyBottomSheetFragment;
 import com.example.cloudydrinks.fragment.ProfileFragment;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Banner;
 import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Category;
@@ -71,14 +72,13 @@ public class HomeActivity extends AppCompatActivity {
     private Timer mTimmer;
     private CounterFab fab;
     private ArrayList<CartModel> cartList;
-    private String userPhoneNumber;
+    private String userId;
     private BadgeDrawable badgeDrawable;
     private int countFavorite;
     private final Fragment homeFragment = new HomeFragment();
     private final Fragment favFragment = new FavoriteFragment();
     private final Fragment deliveryFragment = new DeliveryFragment();
     private final Fragment profileFragment = new ProfileFragment();
-    public static final String PREFERENCE_USERID = "com.example.cloudydrinks";
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,23 +97,11 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigation.getMenu().findItem(R.id.itHome).setChecked(true);
 
         // Get user phone number
-        userPhoneNumber = getIntent().getStringExtra("userPhoneNumber");
-
-        // Save user id to shared preferences
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("userid", userPhoneNumber);
-        editor.apply();
-
-        // pass current user to favorite fragment
-        Bundle data = new Bundle();
-        data.putString("userPhoneNo", userPhoneNumber);
-        favFragment.setArguments(data);
-        profileFragment.setArguments(data);
+        userId = DataLocalManager.getUserId();
 
         // Get data from firebase
         cartList = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("Cart");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("Cart");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -166,9 +154,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ProductSearchingActivity.class);
-                intent.putExtra("userPhoneNumber", userPhoneNumber);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -196,9 +182,6 @@ public class HomeActivity extends AppCompatActivity {
 
     public void openBottomSheetFragment(ArrayList<CartModel> cartList) {
         MyBottomSheetFragment myBottomSheetFragment = new MyBottomSheetFragment(cartList);
-        Bundle bundle = new Bundle();
-        bundle.putString("userPhoneNumber", userPhoneNumber);
-        myBottomSheetFragment.setArguments(bundle);
         myBottomSheetFragment.show(getSupportFragmentManager(), myBottomSheetFragment.getTag());
     }
     private void setCartItemQuantity(ArrayList<CartModel> cartList) {
@@ -325,7 +308,6 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(HomeActivity.this, CategoryProductActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("category", category);
-        intent.putExtra("userPhoneNumber", userPhoneNumber);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -371,11 +353,10 @@ public class HomeActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putSerializable("product object", product);
         intent.putExtras(bundle);
-        intent.putExtra("userPhoneNumber", userPhoneNumber);
         startActivity(intent);
     }
     private void loadFavoriteQuantityItem() {
-        DatabaseReference wishList = FirebaseDatabase.getInstance().getReference("users").child(userPhoneNumber).child("wishlist");
+        DatabaseReference wishList = FirebaseDatabase.getInstance().getReference("users").child(userId).child("wishlist");
         wishList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

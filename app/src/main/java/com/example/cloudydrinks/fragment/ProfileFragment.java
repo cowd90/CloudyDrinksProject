@@ -1,6 +1,6 @@
 package com.example.cloudydrinks.fragment;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,13 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.adapter.ProductListAdapter;
-import com.example.cloudydrinks.model.Product;
+import com.example.cloudydrinks.activity.ConfirmPasswordActivity;
+import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.User;
-import com.example.cloudydrinks.my_interface.IClickItemListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,7 +26,8 @@ import com.google.firebase.database.ValueEventListener;
 public class ProfileFragment extends Fragment {
     private TextView userNameTV, userPhoneTV;
     private DatabaseReference databaseReference;
-    private String userKey;
+    private String userId;
+    private RelativeLayout changePassword;
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -38,21 +39,28 @@ public class ProfileFragment extends Fragment {
 
         userNameTV = mView.findViewById(R.id.userNameTV);
         userPhoneTV = mView.findViewById(R.id.userPhoneTV);
+        changePassword = mView.findViewById(R.id.changePassword);
+
+        changePassword.setOnClickListener(changePasswordListener);
 
         displayUserData();
 
         return mView;
     }
 
+    public View.OnClickListener changePasswordListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getActivity(), ConfirmPasswordActivity.class);
+            startActivity(intent);
+        }
+    };
+
     public void displayUserData() {
 
-        Bundle data = getArguments();
+        userId = DataLocalManager.getUserId();
 
-        if (data != null) {
-            userKey = data.getString("userPhoneNo");
-        }
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userKey).child("user_info");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("user_info");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

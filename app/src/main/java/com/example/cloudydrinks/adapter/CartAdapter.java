@@ -21,13 +21,11 @@ import java.util.ArrayList;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private ArrayList<CartModel> cartList;
-    private IClickCartModel iDelete, iIncrease, iDecrease;
+    private IClickCartModel iDelete;
 
-    public CartAdapter(ArrayList<CartModel> cartList, IClickCartModel iDelete, IClickCartModel iIncrease, IClickCartModel iDecrease) {
+    public CartAdapter(ArrayList<CartModel> cartList, IClickCartModel iDelete) {
         this.cartList = cartList;
         this.iDelete = iDelete;
-        this.iIncrease = iIncrease;
-        this.iDecrease = iDecrease;
     }
 
     @NonNull
@@ -51,7 +49,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.productNameTV.setText(cartModel.getProduct_name());
         String price = String.valueOf(cartModel.getTotalPrice());
         holder.productTotalPriceTV.setText(NumberCurrencyFormatUtil.numberCurrencyFormat(price));
-        holder.quantityTV.setText(String.valueOf(cartModel.getQuantity()));
+        holder.quantityTV.setText("x" + cartModel.getQuantity());
         holder.sizeTV.setText(cartModel.getSize());
         Picasso.get().load(cartModel.getProduct_img_url()).into(holder.productImage);
 
@@ -59,20 +57,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 iDelete.onClickCartListener(cartModel);
-            }
-        });
-
-        holder.minusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iDecrease.onClickCartListener(cartModel);
-            }
-        });
-
-        holder.plusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iIncrease.onClickCartListener(cartModel);
             }
         });
     }
@@ -87,7 +71,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView productNameTV, productTotalPriceTV, quantityTV, sizeTV;
-        ImageView productImage, minusBtn, plusBtn, removeCartBtn;
+        ImageView productImage, removeCartBtn;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             productNameTV = itemView.findViewById(R.id.productNameCartTV);
@@ -95,8 +79,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             quantityTV = itemView.findViewById(R.id.quantityTV);
             sizeTV = itemView.findViewById(R.id.productStats);
             productImage = itemView.findViewById(R.id.productImageCart);
-            minusBtn = itemView.findViewById(R.id.minusBtn);
-            plusBtn = itemView.findViewById(R.id.plusBtn);
             removeCartBtn = itemView.findViewById(R.id.removeCartBtn);
         }
     }
