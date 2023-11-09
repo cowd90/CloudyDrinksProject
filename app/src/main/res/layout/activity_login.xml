@@ -22,15 +22,15 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="-16dp"
             android:fontFamily="@font/greeting"
-            android:text="Welcome back!"
-            android:textSize="70sp"/>
+            android:text="Welcome back"
+            android:textSize="50sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign in to get your drink"
             android:layout_below="@id/title_login"
-            android:textSize="32sp"
+            android:textSize="26sp"
             android:fontFamily="@font/lucky"/>
 
     </RelativeLayout>

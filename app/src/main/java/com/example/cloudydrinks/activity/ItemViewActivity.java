@@ -5,7 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatRadioButton;
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -19,11 +21,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andremion.counterfab.CounterFab;
 import com.example.cloudydrinks.R;
+import com.example.cloudydrinks.fragment.MyBottomSheetFragment;
 import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.CartModel;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.model.Size;
+import com.example.cloudydrinks.utils.CircleAnimationUtil;
 import com.example.cloudydrinks.utils.MySpannable;
 import com.example.cloudydrinks.utils.NumberCurrencyFormatUtil;
 import com.google.android.material.button.MaterialButton;
@@ -42,7 +47,7 @@ import java.util.Objects;
 public class ItemViewActivity extends AppCompatActivity {
     private final static String USER = "users";
     private final static String CART = "Cart";
-    private final static String WISH_LIST = "wishlist";
+    private final static String WISH_LIST = "wishlit";
     private ImageView productImage, plusBtn, minusBtn;
     private AppCompatRadioButton largeSizeRB, mediumSizeRB, smallSizeRB;
     private TextView productNameTV, productPriceTV, productDescriptionTV, quantityTV;
@@ -58,7 +63,7 @@ public class ItemViewActivity extends AppCompatActivity {
     private String sizeTxt;
     private String userId;
     private CheckBox favoriteCheckbox;
-    private ImageView closeIV;
+    private CounterFab fab;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -83,8 +88,9 @@ public class ItemViewActivity extends AppCompatActivity {
         quantityTV = findViewById(R.id.quantityTV);
         addToCartBtn = findViewById(R.id.addToCartBtn);
         favoriteCheckbox = findViewById(R.id.favCheckbox);
+        fab = findViewById(R.id.fab);
 
-        closeIV = findViewById(R.id.closeIV);
+        ImageView closeIV = findViewById(R.id.closeIV);
         closeIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +135,36 @@ public class ItemViewActivity extends AppCompatActivity {
             }
         });
 
+        // Get cart data from firebase
+        ArrayList<CartModel> cartList = new ArrayList<>();
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(CART);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                cartList.clear();
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        CartModel cartModel = dataSnapshot.getValue(CartModel.class);
+                        cartList.add(cartModel);
+                    }
+                    setCartItemQuantity(cartList);
+                } else {
+                    setCartItemQuantity(cartList);
+                }
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openBottomSheetFragment(cartList);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
         // Retrieve product object from previous activity
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -165,10 +201,41 @@ public class ItemViewActivity extends AppCompatActivity {
         addToCartBtn.setOnClickListener(addToCartOnClickListener);
 
     }
-
+    public void openBottomSheetFragment(ArrayList<CartModel> cartList) {
+        MyBottomSheetFragment myBottomSheetFragment = new MyBottomSheetFragment(cartList);
+        myBottomSheetFragment.show(getSupportFragmentManager(), myBottomSheetFragment.getTag());
+    }
+    private void setCartItemQuantity(ArrayList<CartModel> cartList) {
+        if (cartList == null) {
+            fab.setCount(0);
+        } else {
+            fab.setCount(cartList.size());
+        }
+    }
     public View.OnClickListener addToCartOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            new CircleAnimationUtil().attachActivity(ItemViewActivity.this).setTargetView(productImage).setMoveDuration(500).setDestView(fab).setAnimationListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(@NonNull Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(@NonNull Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationCancel(@NonNull Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(@NonNull Animator animation) {
+
+                }
+            }).startAnimation();
             addToCart(product);
         }
     };
@@ -189,13 +256,7 @@ public class ItemViewActivity extends AppCompatActivity {
                     map.put("quantity", cartModel.getQuantity());
                     map.put("totalPrice", cartModel.getQuantity() * cartModel.getProduct_price());
 
-                    userCart.child(path).updateChildren(map, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-
-                            Toast.makeText(ItemViewActivity.this, "Đã cập nhật giỏ hàng!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    userCart.child(path).updateChildren(map);
                 } else { // If item doesn't not exist in cart, add new one
                     CartModel cartModel = new CartModel();
 
@@ -217,12 +278,7 @@ public class ItemViewActivity extends AppCompatActivity {
                     cartModel.setQuantity(quantity);
 
                     cartModel.setTotalPrice(cartModel.getProduct_price() * cartModel.getQuantity());
-                    userCart.child(path).setValue(cartModel, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                            Toast.makeText(ItemViewActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    userCart.child(path).setValue(cartModel);
                 }
             }
 
