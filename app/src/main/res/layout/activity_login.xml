@@ -7,8 +7,7 @@
     tools:context=".activity.LoginActivity"
     android:background="@drawable/bg_login"
     tools:ignore="HardcodedText"
-    android:orientation="vertical"
-    android:gravity="center_vertical">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -22,17 +21,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="-16dp"
-            android:fontFamily="@font/naturebeauty"
+            android:fontFamily="@font/greeting"
             android:text="Welcome back!"
-            android:textSize="36sp"/>
+            android:textSize="70sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign in to get your drink"
             android:layout_below="@id/title_login"
-            android:textSize="26sp"
-            android:fontFamily="cursive"/>
+            android:textSize="32sp"
+            android:fontFamily="@font/lucky"/>
 
     </RelativeLayout>
 

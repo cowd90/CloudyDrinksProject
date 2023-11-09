@@ -3,8 +3,6 @@ package com.example.cloudydrinks.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,8 +10,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,9 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.fragment.ProfileFragment;
 import com.example.cloudydrinks.local_data.DataLocalManager;
-import com.example.cloudydrinks.model.Contact;
 import com.example.cloudydrinks.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -111,8 +107,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
             }
         });
 
-        passwordET.addTextChangedListener(textWatcher);
-        conPasswordET.addTextChangedListener(textWatcher);
+        passwordET.addTextChangedListener(pwdTextWatcher);
+        conPasswordET.addTextChangedListener(conPwdTextWatcher);
 
         doneBtn.setOnClickListener(changeNewPasswordListener);
     }
@@ -120,52 +116,46 @@ public class ChangePasswordActivity extends AppCompatActivity {
     public View.OnClickListener changeNewPasswordListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (password.equals(conPassword)) {
+                databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(USER_INFO);
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        user = snapshot.getValue(User.class);
+                        Log.d("password", password);
+                        user.setPassword(password);
 
-            if (password.length() < 8) {
+                        databaseReference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(ChangePasswordActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(ChangePasswordActivity.this, HomeActivity.class));
+                                finish();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            } else if (password.length() < 8) {
                 passwordET.setError("Mật khẩu phải dài ít nhất 8 ký tự");
                 passwordET.requestFocus();
                 return;
-            }
-
-            if (conPassword.isEmpty()) {
+            } else if (conPassword.isEmpty()) {
                 conPasswordET.setError("Không được bỏ trống");
                 conPasswordET.requestFocus();
-                return;
-            }
-
-            if (!conPassword.equals(password)) {
+            } else {
                 conPasswordET.setError("Mật khẩu không trùng khớp");
                 conPasswordET.requestFocus();
-                return;
             }
-
-            databaseReference = FirebaseDatabase.getInstance().getReference(USER).child(userId).child(USER_INFO);
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @SuppressLint("NotifyDataSetChanged")
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    user = snapshot.getValue(User.class);
-                    user.setPassword(password);
-
-                    databaseReference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(ChangePasswordActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(ChangePasswordActivity.this, HomeActivity.class));
-                            finish();
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
         }
     };
 
-    public TextWatcher textWatcher = new TextWatcher() {
+    public TextWatcher pwdTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -173,7 +163,27 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (!password.isEmpty()) {
+                conPasswordET.setEnabled(true);
+            } else {
+                conPasswordET.setEnabled(false);
+            }
+        }
 
+        @Override
+        public void afterTextChanged(Editable s) {
+            password = s.toString();
+        }
+    };
+
+    public TextWatcher conPwdTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (!s.toString().isEmpty()) {
                 doneBtn.setEnabled(true);
                 doneBtn.setBackgroundColor(Color.parseColor("#FB6E64"));
@@ -187,7 +197,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            conPassword = s.toString();
         }
     };
 }

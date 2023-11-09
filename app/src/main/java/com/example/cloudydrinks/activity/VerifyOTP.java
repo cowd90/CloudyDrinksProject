@@ -41,7 +41,6 @@ public class VerifyOTP extends AppCompatActivity {
     private final static String USER = "users";
     private final static String USER_INFO = "user_info";
     private EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
-    private TextView notification, phoneNumberTV;
     private ProgressBar progressBar;
     private MaterialButton verifyBtn;
     private FirebaseAuth mAuth;
@@ -58,8 +57,8 @@ public class VerifyOTP extends AppCompatActivity {
 
         progressBar = findViewById(R.id.signup_verification_progress_bar);
         verifyBtn = findViewById(R.id.btn_nextStep);
-        notification = findViewById(R.id.tv_notification);
-        phoneNumberTV = findViewById(R.id.tv_phoneNumber);
+        TextView notification = findViewById(R.id.tv_notification);
+        TextView phoneNumberTV = findViewById(R.id.tv_phoneNumber);
 
         username = getIntent().getStringExtra("username");
         password = getIntent().getStringExtra("password");

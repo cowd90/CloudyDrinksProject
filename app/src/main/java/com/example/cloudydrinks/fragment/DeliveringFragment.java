@@ -2,10 +2,7 @@ package com.example.cloudydrinks.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,26 +10,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.activity.AddressActivity;
-import com.example.cloudydrinks.activity.AddressSelection;
-import com.example.cloudydrinks.activity.PaymentActivity;
-import com.example.cloudydrinks.adapter.AddressAdapter;
 import com.example.cloudydrinks.adapter.DeliveringItemAdapter;
-import com.example.cloudydrinks.adapter.ProductListAdapter;
 import com.example.cloudydrinks.local_data.DataLocalManager;
-import com.example.cloudydrinks.model.CartModel;
-import com.example.cloudydrinks.model.Contact;
 import com.example.cloudydrinks.model.Order;
-import com.example.cloudydrinks.model.Product;
-import com.example.cloudydrinks.my_interface.IClickItemListener;
 import com.example.cloudydrinks.my_interface.IOrderClickListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

@@ -10,12 +10,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.GridView;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.adapter.CategoryAdapter;
 import com.example.cloudydrinks.adapter.PopularArticleAdapter;
-import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Category;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.my_interface.IClickItemListener;

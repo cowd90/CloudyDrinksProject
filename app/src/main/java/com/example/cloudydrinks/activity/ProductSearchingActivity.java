@@ -9,17 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
 import com.example.cloudydrinks.adapter.ProductListAdapter;
-import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Product;
 import com.example.cloudydrinks.my_interface.IClickItemListener;
 import com.google.firebase.database.DataSnapshot;
@@ -46,7 +40,7 @@ public class ProductSearchingActivity extends AppCompatActivity {
         cancelSearchingTV = findViewById(R.id.cancelSearchingTV);
         searchView = findViewById(R.id.searchBarET);
 
-        generateFoodList();
+        generateList();
 
         cancelSearchingTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +49,7 @@ public class ProductSearchingActivity extends AppCompatActivity {
             }
         });
     }
-    private void generateFoodList() {
+    private void generateList() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ProductSearchingActivity.this, LinearLayoutManager.VERTICAL, false);
         recyclerViewFoodList = findViewById(R.id.allFoodRV);
         recyclerViewFoodList.setLayoutManager(linearLayoutManager);

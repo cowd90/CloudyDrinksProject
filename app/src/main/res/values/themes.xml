@@ -1,8 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.CloudyDrinks" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Customize your light theme here. -->
-<!--         <item name="colorPrimary">#BA704F</item>-->
+         <item name="colorPrimary">#884A39</item>
 <!--        <item name="colorAccent">#BA704F</item>-->
     </style>
 

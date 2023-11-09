@@ -1,7 +1,6 @@
 package com.example.cloudydrinks.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,14 +8,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.adapter.DeliveringItemAdapter;
 import com.example.cloudydrinks.adapter.ReiceivedAndCancelAdapter;
 import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Order;

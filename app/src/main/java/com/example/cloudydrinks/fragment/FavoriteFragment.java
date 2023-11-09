@@ -1,7 +1,6 @@
 package com.example.cloudydrinks.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -11,22 +10,16 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.example.cloudydrinks.R;
-import com.example.cloudydrinks.activity.ItemViewActivity;
-import com.example.cloudydrinks.activity.ProductSearchingActivity;
 import com.example.cloudydrinks.adapter.FavoriteListAdapter;
-import com.example.cloudydrinks.adapter.ProductListAdapter;
 import com.example.cloudydrinks.adapter.RecyclerViewItemTouchHelper;
 import com.example.cloudydrinks.local_data.DataLocalManager;
 import com.example.cloudydrinks.model.Product;
-import com.example.cloudydrinks.my_interface.IClickItemListener;
 import com.example.cloudydrinks.my_interface.ItemTouchHelperListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;

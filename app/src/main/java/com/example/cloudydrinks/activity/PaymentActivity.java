@@ -40,15 +40,12 @@ public class PaymentActivity extends AppCompatActivity {
     private final static String CART = "Cart";
     private final static String ORDER = "order";
     private final static String DELIVERING = "status_delivering";
-    private RecyclerView paymentRecyclerView;
     private ArrayList<CartModel> cartList;
     private DatabaseReference databaseReference;
     private String userId, contactAddress;
     private PaymentDetailAdapter adapter;
     private TextView totalPriceTV, addressTV;
     private int totalPrice;
-    private LinearLayout addressLayout;
-    private MaterialButton orderBtn;
     private ImageView addAddressImage;
     private Contact contact;
     @Override
@@ -59,8 +56,8 @@ public class PaymentActivity extends AppCompatActivity {
         userId = DataLocalManager.getUserId();
 
         totalPriceTV = findViewById(R.id.totalPriceTV);
-        addressLayout = findViewById(R.id.addressLayout);
-        orderBtn = findViewById(R.id.orderBtn);
+        LinearLayout addressLayout = findViewById(R.id.addressLayout);
+        MaterialButton orderBtn = findViewById(R.id.orderBtn);
         addressTV = findViewById(R.id.addressTV);
         addAddressImage = findViewById(R.id.addAddressImage);
 
@@ -145,7 +142,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void generatePaymentDetail() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PaymentActivity.this);
-        paymentRecyclerView = findViewById(R.id.paymentDetailRV);
+        RecyclerView paymentRecyclerView = findViewById(R.id.paymentDetailRV);
         paymentRecyclerView.setLayoutManager(linearLayoutManager);
 
         cartList = new ArrayList<>();
