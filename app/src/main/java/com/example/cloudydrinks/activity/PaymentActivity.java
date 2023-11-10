@@ -119,15 +119,10 @@ public class PaymentActivity extends AppCompatActivity {
                         order.setTotalPrice(model.getTotalPrice());
                         order.setContact(contact);
 
-                        String orderDeliveringKey = RandomKey.generateKey();
-                        databaseReference.child(ORDER).child(DELIVERING).child(order.getOrderId()).setValue(order).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(PaymentActivity.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                        });
+                        databaseReference.child(ORDER).child(DELIVERING).child(order.getOrderId()).setValue(order);
                     }
+                    Toast.makeText(PaymentActivity.this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
                 databaseReference.removeEventListener(this);
                 adapter.notifyDataSetChanged();

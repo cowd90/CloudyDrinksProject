@@ -27,6 +27,7 @@ import java.util.Objects;
 
 public class ForgetPasswordActivity extends AppCompatActivity {
     private final static String USER = "users";
+    private final static String USER_INFO = "user_info";
     private MaterialButton button;
     private EditText phoneNumberET;
     private ProgressBar progressBar;
@@ -57,14 +58,13 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 String userPhoneNumber = phoneNumberET.getText().toString().trim();
 
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference(USER);
-                Query username = reference.orderByChild("phoneNumber").equalTo(userPhoneNumber);
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference(USER).child(userPhoneNumber);
 
-                username.addListenerForSingleValueEvent(new ValueEventListener() {
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         //Check if user exists
-                        if (snapshot.hasChild(userPhoneNumber)){
+                        if (snapshot.exists()){
                             phoneNumberET.setError(null);
 
                             Intent intent = new Intent(getApplicationContext(), VerifyOTP.class);
