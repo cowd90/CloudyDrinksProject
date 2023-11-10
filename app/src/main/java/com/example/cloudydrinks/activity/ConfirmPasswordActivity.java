@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cloudydrinks.R;
@@ -37,6 +38,7 @@ public class ConfirmPasswordActivity extends AppCompatActivity {
     private String userId;
     private String currentPassword;
     private Button confirmOldPwdBtn;
+    private TextView forget_pwd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,7 @@ public class ConfirmPasswordActivity extends AppCompatActivity {
         passwordIcon = findViewById(R.id.passwordIcon);
         passwordET = findViewById(R.id.passwordET);
         confirmOldPwdBtn = findViewById(R.id.confirmOldPwdBtn);
+        forget_pwd = findViewById(R.id.forget_pwd);
 
         // hide/show password listener
         passwordIcon.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +108,7 @@ public class ConfirmPasswordActivity extends AppCompatActivity {
                 });
             }
         });
+        forget_pwd.setOnClickListener(forgetPassword);
     }
 
     public TextWatcher textWatcher = new TextWatcher() {
@@ -130,6 +134,12 @@ public class ConfirmPasswordActivity extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable s) {
 
+        }
+    };
+    public View.OnClickListener forgetPassword = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(getApplicationContext(), ForgetPasswordActivity.class));
         }
     };
 }

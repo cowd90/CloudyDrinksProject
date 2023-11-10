@@ -191,7 +191,6 @@ public class HomeActivity extends AppCompatActivity {
             fab.setCount(cartList.size());
         }
     }
-
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -281,6 +280,7 @@ public class HomeActivity extends AppCompatActivity {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                categoryList.clear();;
                 if(snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         Category category = dataSnapshot.getValue(Category.class);

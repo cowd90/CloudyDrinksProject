@@ -47,7 +47,7 @@ import java.util.Objects;
 public class ItemViewActivity extends AppCompatActivity {
     private final static String USER = "users";
     private final static String CART = "Cart";
-    private final static String WISH_LIST = "wishlit";
+    private final static String WISH_LIST = "wishlist";
     private ImageView productImage, plusBtn, minusBtn;
     private AppCompatRadioButton largeSizeRB, mediumSizeRB, smallSizeRB;
     private TextView productNameTV, productPriceTV, productDescriptionTV, quantityTV;
@@ -215,7 +215,7 @@ public class ItemViewActivity extends AppCompatActivity {
     public View.OnClickListener addToCartOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            new CircleAnimationUtil().attachActivity(ItemViewActivity.this).setTargetView(productImage).setMoveDuration(500).setDestView(fab).setAnimationListener(new Animator.AnimatorListener() {
+            new CircleAnimationUtil().attachActivity(ItemViewActivity.this).setTargetView(productImage).setMoveDuration(800).setDestView(fab).setAnimationListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(@NonNull Animator animation) {
 
